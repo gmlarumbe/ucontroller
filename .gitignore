@@ -1,0 +1,12 @@
+*~
+*#
+library
+GPATH
+GRTAGS
+GTAGS
+gtags.files
+waves
+others
+
+*.vhd
+*.cf
