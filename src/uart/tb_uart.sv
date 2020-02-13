@@ -18,7 +18,6 @@ module tb_uart () ;
     logic [7:0] TX_DataIn = 1'b0;
     logic TX_Valid        = 1'b0;
 
-    logic Ack_in;
     logic [7:0] Data_Out;
     logic Empty;
     logic Full;
@@ -38,17 +37,13 @@ module tb_uart () ;
         ) DUT (
         .Clk       (Clk),
         .Rst_n     (Rst_n),
-        .Ack_in    (Ack_in),
-
         .TX_Ready  (TX_Ready),
         .TX_Valid  (TX_Valid),
         .TX_DataIn (TX_DataIn),
         .TXD       (TXD),
-
         .RXD       (RXD),
         .Data_Out  (Data_Out),
         .Data_Read (Data_Read),
-
         .Full      (Full),
         .Empty     (Empty)
         );
@@ -95,6 +90,18 @@ module tb_uart () ;
     endtask: serial_tx
 
 
+
+    task read_from_fifo ();
+        repeat (3) begin
+            Data_Read <= 1'b1;
+            @(posedge Clk);
+            Data_Read <= 1'b0;
+            @(posedge Clk);
+        end
+    endtask: read_from_fifo
+
+
+
     // === TB Setup === \\
     //$timeformat params:
     //1) Scaling factor (–9 for nanoseconds, –12 for picoseconds)
@@ -124,6 +131,9 @@ module tb_uart () ;
         serial_rx('h03);
         repeat (3000) @(posedge Clk);
         serial_rx('hCC);
+        repeat (3000) @(posedge Clk);
+
+        read_from_fifo;
         repeat (3000) @(posedge Clk);
 
         $display("@%0d: TEST PASSED", $time);

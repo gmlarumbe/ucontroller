@@ -4,7 +4,6 @@ module uart # (
     )(
     input logic        Clk,
     input logic        Rst_n,
-    output logic       Ack_in,
 
     input logic        TX_Valid,
     output logic       TX_Ready,
@@ -80,17 +79,12 @@ module uart # (
     // Seq logic
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
-            Ack_in   <= 1'b1;
-	    TX_Start <= 1'b0;
+            TX_Start <= 1'b0;
         end else begin
-            if (TX_Valid && TX_Ready_i) begin
-                Ack_in 	 <= 1'b0;
+            if (TX_Valid && TX_Ready_i)
                 TX_Start <= 1'b1;
-            end
-            else begin
-                Ack_in   <= 1'b1;
+            else
                 TX_Start <= 1'b0;
-            end
         end
     end
 
