@@ -7,7 +7,7 @@ module uart_tx # (
     input logic       Start,
     input logic [7:0] Data,
     output logic      EOT,
-    output logic      TX
+    output logic      TXD
     );
 
     // Params
@@ -31,6 +31,21 @@ module uart_tx # (
     logic [31:0] period_cnt;
     logic [31:0] bit_cnt;
 
+
+    // Comb logic
+    assign bit_end = (state != IDLE && period_cnt == PULSE_END_OF_COUNT) ? 1'b1 : 1'b0;
+    assign data_send_end = (state == SEND_DATA && bit_cnt == 7 && bit_end) ? 1'b1 : 1'b0;
+
+    // TX line output
+    always_comb begin
+        unique case (state)
+            IDLE:      TXD = 1'b1;
+            START_BIT: TXD = 1'b0;
+            SEND_DATA: TXD = data_reg[bit_cnt];
+            STOP_BIT:  TXD = 1'b1;
+            default:   TXD = 1'b1;
+        endcase
+    end
 
     // Comb FSM
     always_comb begin
@@ -87,20 +102,6 @@ module uart_tx # (
         endcase
     end
 
-    // TX line output
-    always_comb begin
-        unique case (state)
-            IDLE:      TX = 1'b1;
-            START_BIT: TX = 1'b0;
-            SEND_DATA: TX = data_reg[bit_cnt];
-            STOP_BIT:  TX = 1'b1;
-            default:   TX = 1'b1;
-        endcase
-    end
-
-    assign bit_end = (state != IDLE && period_cnt == PULSE_END_OF_COUNT) ? 1'b1 : 1'b0;
-    assign data_send_end = (state == SEND_DATA && bit_cnt == 7 && bit_end) ? 1'b1 : 1'b0;
-
 
     // Seq FSM
     always_ff @(posedge Clk) begin
@@ -112,7 +113,7 @@ module uart_tx # (
     end
 
 
-
+    // Period counter within bits
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             period_cnt <= 0;
@@ -128,6 +129,7 @@ module uart_tx # (
     end
 
 
+    // Bit count within TX
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             bit_cnt <= 0;
@@ -146,7 +148,7 @@ module uart_tx # (
     end
 
 
-
+    // Input registering
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             data_reg <= 'h0;

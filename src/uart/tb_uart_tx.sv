@@ -10,10 +10,10 @@ module tb_uart_tx () ;
     // Signals
     logic Clk = 1'b0;
     logic Rst_n = 1'b1;
-    logic [7:0] Data = '0;
+    logic [7:0] TXData = '0;
     logic Start = 1'b0;
     logic EOT;
-    logic TX;
+    logic TXD;
 
     // System Clock
     always begin
@@ -45,8 +45,8 @@ module tb_uart_tx () ;
     endtask : reset_system
 
 
-    task serial_tx (input logic [7:0] TXD);
-        Data = TXD;
+    task serial_tx (input logic [7:0] Data);
+        TXData = Data;
         Start = 1'b1;
         @(posedge Clk);
         Start = 1'b0;
