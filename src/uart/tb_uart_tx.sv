@@ -7,13 +7,14 @@ module tb_uart_tx () ;
     localparam logic [31:0] FREQ_CLK=100000000;
     localparam logic [31:0] TX_SPEED=115200;
 
+
     // Signals
-    logic Clk = 1'b0;
-    logic Rst_n = 1'b1;
+    logic       Clk = 1'b0;
+    logic       Rst_n = 1'b1;
     logic [7:0] TXData = '0;
-    logic Start = 1'b0;
-    logic EOT;
-    logic TXD;
+    logic       Start = 1'b0;
+    logic       EOT;
+    logic       TXD;
 
     // System Clock
     always begin
@@ -28,10 +29,10 @@ module tb_uart_tx () ;
         ) DUT (
         .Clk   (Clk),
         .Rst_n (Rst_n),
-        .Data  (Data),
+        .Data  (TXData),
         .Start (Start),
         .EOT   (EOT),
-        .TX    (TX)
+        .TXD   (TXD)
         );
 
 
