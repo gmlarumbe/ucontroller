@@ -10,20 +10,20 @@ module tb_uart () ;
     localparam integer BIT_CYCLES = FREQ_CLK / TX_SPEED;
 
     // Non-auto signals
-    logic Clk 		  = 1'b0;
-    logic Rst_n 	  = 1'b1;
+    logic Clk             = 1'b0;
+    logic Rst_n           = 1'b1;
 
-    logic Data_Read 	  = 1'b0;
-    logic RXD 		  = 1'b1;
+    logic Data_Read       = 1'b0;
+    logic RXD             = 1'b1;
     logic [7:0] TX_DataIn = 1'b0;
-    logic TX_Valid 	  = 1'b0;
+    logic TX_Valid        = 1'b0;
 
-    logic Ack_in;	  
-    logic [7:0] Data_Out;	  
-    logic Empty;	  
-    logic Full;		  
-    logic TXD;		  
-    logic TX_Ready;	  
+    logic Ack_in;
+    logic [7:0] Data_Out;
+    logic Empty;
+    logic Full;
+    logic TXD;
+    logic TX_Ready;
 
 
     // System Clock
@@ -33,25 +33,25 @@ module tb_uart () ;
 
     // DUT Instantiation
     uart # (
-	.FREQ_CLK (FREQ_CLK),
-	.TX_SPEED (TX_SPEED)
-	) DUT (
-	.Clk	   (Clk),
-	.Rst_n	   (Rst_n),
-	.Ack_in	   (Ack_in),
+        .FREQ_CLK (FREQ_CLK),
+        .TX_SPEED (TX_SPEED)
+        ) DUT (
+        .Clk       (Clk),
+        .Rst_n     (Rst_n),
+        .Ack_in    (Ack_in),
 
-	.TX_Ready  (TX_Ready),
-	.TX_Valid  (TX_Valid),
-	.TX_DataIn (TX_DataIn),
-	.TXD	   (TXD),
+        .TX_Ready  (TX_Ready),
+        .TX_Valid  (TX_Valid),
+        .TX_DataIn (TX_DataIn),
+        .TXD       (TXD),
 
-	.RXD	   (RXD),
-	.Data_Out  (Data_Out),
-	.Data_Read (Data_Read),
+        .RXD       (RXD),
+        .Data_Out  (Data_Out),
+        .Data_Read (Data_Read),
 
-	.Full	   (Full),
-	.Empty	   (Empty)
-	);
+        .Full      (Full),
+        .Empty     (Empty)
+        );
 
 
     // Tasks

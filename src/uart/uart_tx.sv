@@ -2,8 +2,8 @@ module uart_tx # (
     parameter logic [31:0] FREQ_CLK=100000000,
     parameter logic [31:0] TX_SPEED=115200
     )(
-    input logic       Rst_n,
     input logic       Clk,
+    input logic       Rst_n,
     input logic       Start,
     input logic [7:0] Data,
     output logic      EOT,
@@ -49,10 +49,8 @@ module uart_tx # (
 
     // Comb FSM
     always_comb begin
-        EOT = 1'b0;
         unique case (state)
             IDLE : begin
-                EOT = 1'b0;
                 bit_ctr_ena = 1'b0;
                 if (Start) begin
                     next_state = START_BIT;
@@ -60,6 +58,8 @@ module uart_tx # (
                 else begin
                     next_state = IDLE;
                 end
+
+                EOT = 1'b1;
             end
 
             START_BIT : begin
@@ -71,6 +71,8 @@ module uart_tx # (
                 else begin
                     next_state = START_BIT;
                 end
+
+                EOT = 1'b0;
             end
 
             SEND_DATA : begin
@@ -81,6 +83,8 @@ module uart_tx # (
                 else begin
                     next_state = SEND_DATA;
                 end
+
+                EOT = 1'b0;
             end
 
             STOP_BIT : begin

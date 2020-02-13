@@ -47,10 +47,10 @@ module tb_uart_tx () ;
 
 
     task serial_tx (input logic [7:0] Data);
-        TXData = Data;
-        Start = 1'b1;
+        TXData <= Data;
+        Start  <= 1'b1;
         @(posedge Clk);
-        Start = 1'b0;
+        Start <= 1'b0;
         @(posedge EOT);
         $display("@%0d: End of Serial TX", $time);
         @(posedge Clk); // Resync
