@@ -13,8 +13,11 @@ module ram (
     output logic [7:0] Temp
     );
 
-    logic 	Cs_gp;
-    logic 	Cs_regs;
+
+    enum logic {REGS, GP} last_mem_space;
+
+    logic       Cs_gp;
+    logic       Cs_regs;
     logic [7:0] DataOut_gp;
     logic [7:0] DataOut_regs;
 
@@ -40,21 +43,34 @@ module ram (
         .DataIn   (DataIn),
         .DataOut  (DataOut_regs),
         .Switches (Switches),
-        .Temp	  (Temp)
+        .Temp     (Temp)
         );
 
 
+    // Aux seq logic to resolve DataOut bus driving
+    always_ff @(posedge Clk) begin
+        if (!Rst_n)
+            last_mem_space <= REGS;
+        else if (Cs) begin
+            if (Address < GP_RAM_BASE)
+                last_mem_space <= REGS;
+            else
+                last_mem_space <= GP;
+        end
+    end
+
+    // Aux comb logic to resolve DataOut bus driving
+    assign DataOut = (last_mem_space == REGS) ? DataOut_regs : DataOut_gp;
+
     always_comb begin
-	if (Address < GP_RAM_BASE) begin
-	    DataOut = DataOut_regs;
-	    Cs_regs = Cs;
-	    Cs_gp   = 1'b0;
-	end
-	else begin
-	    DataOut = DataOut_gp;
-	    Cs_regs = 1'b0;
-	    Cs_gp   = Cs;
-	end
+        if (Address < GP_RAM_BASE) begin
+            Cs_regs = Cs;
+            Cs_gp   = 1'b0;
+        end
+        else begin
+            Cs_regs = 1'b0;
+            Cs_gp   = Cs;
+        end
     end
 
 

@@ -5,26 +5,26 @@ package global_pkg;
     // Types for the RAM memory
     //////////////////////////////////////////////////////////////////////////////-
 
-    localparam integer RAM_DEPTH = 1024;
+    localparam integer RAM_DEPTH = 256;
 
-    typedef logic[7:0] item_array8_ram;
-    typedef item_array8_ram[RAM_DEPTH-1:0] array8_ram;
+    // typedef logic[7:0] item_array8_ram;
+    // typedef item_array8_ram[RAM_DEPTH-1:0] array8_ram;
 
-    // //////////////////////////////////////////////////////////////////////////////-
-    // // Useful constants for addressing purposes
-    // //////////////////////////////////////////////////////////////////////////////-
+    //////////////////////////////////////////////////////////////////////////////-
+    // Useful constants for addressing purposes
+    //////////////////////////////////////////////////////////////////////////////-
 
-    // localparam logic [7:0] DMA_RX_BUFFER_MSB  = 'h00';
-    // localparam DMA_RX_BUFFER_MID logic [7:0] = 'h01';
-    // localparam DMA_RX_BUFFER_LSB logic [7:0] = 'h02';
-    // localparam NEW_INST          logic [7:0] = 'h03';
-    // localparam DMA_TX_BUFFER_MSB logic [7:0] = 'h04';
-    // localparam DMA_TX_BUFFER_LSB logic [7:0] = 'h05';
-    // localparam SWITCH_BASE       logic [7:0] = 'h10';
-    // localparam LEVER_BASE        logic [7:0] = 'h20';
-    // localparam CAL_OP            logic [7:0] = 'h30';
-    // localparam T_STAT            logic [7:0] = 'h31';
-    // localparam GP_RAM_BASE       logic [7:0] = 'h40';
+    localparam logic [7:0] DMA_RX_BUFFER_MSB  = 'h00;
+    localparam logic [7:0] DMA_RX_BUFFER_MID  = 'h01;
+    localparam logic [7:0] DMA_RX_BUFFER_LSB  = 'h02;
+    localparam logic [7:0] NEW_INST           = 'h03;
+    localparam logic [7:0] DMA_TX_BUFFER_MSB  = 'h04;
+    localparam logic [7:0] DMA_TX_BUFFER_LSB  = 'h05;
+    localparam logic [7:0] SWITCH_BASE        = 'h10;
+    localparam logic [7:0] LEVER_BASE         = 'h20;
+    localparam logic [7:0] CAL_OP             = 'h30;
+    localparam logic [7:0] T_STAT             = 'h31;
+    localparam logic [7:0] GP_RAM_BASE        = 'h40;
 
     // //////////////////////////////////////////////////////////////////////////////-
     // // Constants to define Type 1 instructions (ALU)
