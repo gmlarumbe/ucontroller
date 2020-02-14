@@ -22,9 +22,24 @@ UNISIMS_DIR=vivado/data/verilog/src/unisims
 ##############################
 all : all_elabs all_sims
 
-all_sims : alu_sim uart_sim ram_sim
+all_sims : alu_sim uart_sim ram_sim dma_sim
 
-all_elabs: alu_elab uart_elab ram_elab
+all_elabs: alu_elab uart_elab ram_elab dma_elab
+
+
+##############################
+# DMA
+##############################
+dma_tx_sim : dma_tx_elab
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_dma_tx.compiled src/pkg/global_pkg.sv src/dma/dma_tx.sv src/dma/tb_dma_tx.sv src/uart/uart_tx.sv
+	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_dma_tx.compiled -$(WAVES_FORMAT)
+	mv tb_dma_tx.$(WAVES_FORMAT) $(WAVES_DIR)
+
+dma_tx_elab : dma_tx_src
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/dma_tx.compiled src/pkg/global_pkg.sv src/dma/dma_tx.sv
+	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/dma/dma_tx.sv
+
+dma_tx_src: global_pkg src/dma/dma_tx.sv 
 
 
 ##############################
