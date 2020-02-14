@@ -22,9 +22,25 @@ UNISIMS_DIR=vivado/data/verilog/src/unisims
 ##############################
 all : all_elabs all_sims
 
-all_sims : alu_sim
+all_sims : alu_sim uart_sim ram_sim
 
-all_elabs: alu_elab
+all_elabs: alu_elab uart_elab ram_elab
+
+
+##############################
+# RAM
+##############################
+ram_sim : ram_elab
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_ram.compiled src/pkg/global_pkg.sv src/ram/ram.sv src/ram/gp_ram.sv src/ram/regs_ram.sv src/ram/tb_ram.sv src/misc/bin2bcd.sv
+	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_ram.compiled -$(WAVES_FORMAT)
+	mv tb_ram.$(WAVES_FORMAT) $(WAVES_DIR)
+
+ram_elab : ram_src
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/ram.compiled src/pkg/global_pkg.sv src/ram/ram.sv src/ram/gp_ram.sv src/ram/regs_ram.sv src/misc/bin2bcd.sv
+	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/ram/ram.sv src/ram/gp_ram.sv src/ram/regs_ram.sv src/misc/bin2bcd.sv --top-module ram
+
+ram_src: global_pkg src/ram/ram.sv src/ram/gp_ram.sv src/ram/regs_ram.sv src/misc/bin2bcd.sv
+
 
 
 ##############################
@@ -82,6 +98,21 @@ alu_elab : alu_src
 	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/alu/alu.sv --top-module alu
 
 alu_src: global_pkg src/alu/alu.sv
+
+##############################
+# MISC
+##############################
+misc_sim : misc_elab
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_misc.compiled src/pkg/global_pkg.sv src/misc/bin2bcd.sv src/misc/tb_bin2bcd.sv
+	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_misc.compiled -$(WAVES_FORMAT)
+	mv tb_misc.$(WAVES_FORMAT) $(WAVES_DIR)
+
+misc_elab : misc_src
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/misc.compiled src/misc/bin2bcd.sv
+	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/misc/bin2bcd.sv --top-module bin2bcd
+
+misc_src: global_pkg src/misc/bin2bcd.sv
+
 
 
 ##############################
