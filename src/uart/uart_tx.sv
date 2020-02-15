@@ -49,17 +49,19 @@ module uart_tx # (
 
     // Comb FSM
     always_comb begin
+        next_state  = state;
+        bit_ctr_ena = 1'b0;
+        load_data   = 1'b0;
+        EOT         = 1'b0;
+
         unique case (state)
             IDLE : begin
+                EOT = 1'b1;
                 bit_ctr_ena = 1'b0;
                 if (Start) begin
                     next_state = START_BIT;
+                    EOT = 1'b0;
                 end
-                else begin
-                    next_state = IDLE;
-                end
-
-                EOT = 1'b1;
             end
 
             START_BIT : begin
@@ -68,11 +70,6 @@ module uart_tx # (
                 if (bit_end) begin
                     next_state = SEND_DATA;
                 end
-                else begin
-                    next_state = START_BIT;
-                end
-
-                EOT = 1'b0;
             end
 
             SEND_DATA : begin
@@ -80,27 +77,18 @@ module uart_tx # (
                 if (data_send_end) begin
                     next_state = STOP_BIT;
                 end
-                else begin
-                    next_state = SEND_DATA;
-                end
-
-                EOT = 1'b0;
             end
 
             STOP_BIT : begin
+                EOT = 1'b0;
                 if (bit_end) begin
                     next_state = IDLE;
                     bit_ctr_ena = 1'b0;
-                    EOT = 1'b1;
                 end
                 else begin
                     next_state = STOP_BIT;
                     bit_ctr_ena = 1'b1;
                 end
-            end
-
-            default : begin
-                next_state = state;
             end
 
         endcase

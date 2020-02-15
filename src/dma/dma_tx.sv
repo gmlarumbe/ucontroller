@@ -42,8 +42,7 @@ module dma_tx (
         Dma_Ready  = 1'b0;
 
         if (Ena) begin
-            case(state)
-
+            unique case (state)
                 IDLE : begin
                     Dma_Ready = 1'b1;
                     Bus_req   = 1'b0;
@@ -53,10 +52,10 @@ module dma_tx (
                 end
 
                 BUS_REQUEST : begin
-                    if (Bus_grant && TX_Ready) begin
+                    Bus_req = 1'b1;
+                    if (Bus_grant & TX_Ready) begin
                         next_state = SEND_MSB;
                         TX_Valid   = 1'b1;
-                        Bus_req    = 1'b1;
                     end
                 end
 
@@ -82,6 +81,8 @@ module dma_tx (
                         next_state = IDLE;
                     end
                 end
+
+                default : ;
 
             endcase
         end

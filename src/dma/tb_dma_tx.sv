@@ -5,6 +5,10 @@ module tb_dma_tx () ;
     timeunit      1ns;
     localparam CLKT = 10ns;  // 100 MHz
 
+    localparam logic [31:0] FREQ_CLK = 100000000;
+    localparam logic [31:0] TX_SPEED = 115200;
+    localparam integer BIT_CYCLES = FREQ_CLK / TX_SPEED;
+
     // Non-auto signals
     logic       Clk       = 1'b0;
     logic       Rst_n     = 1'b1;
@@ -54,17 +58,23 @@ module tb_dma_tx () ;
         );
 
 
-    uart_tx I_UART_TX (
-        // Inputs
-        .Clk   (Clk),
-        .Rst_n (Rst_n),
-        .Start (TX_Valid),
-        .Data  (TX_Data),
-        // Outputs
-        .EOT   (TX_Ready),
-        .TXD   (TXD)
+    uart # (
+        .FREQ_CLK (FREQ_CLK),
+        .TX_SPEED (TX_SPEED)
+        ) I_UART (
+        .Clk       (Clk),
+        .Rst_n     (Rst_n),
+        .TX_Valid  (TX_Valid),
+        .TX_DataIn (TX_Data),
+        .TX_Ready  (TX_Ready),
+        .TXD       (TXD),
+        // RX Interface not relevant for this testbench
+        .Data_Read (),
+        .Data_Out  (),
+        .Full      (),
+        .Empty     (),
+        .RXD       ()
         );
-
 
 
     // Tasks
@@ -76,19 +86,21 @@ module tb_dma_tx () ;
         repeat (10) @(posedge Clk);
     endtask : reset_system
 
-    task start_dma ();
+
+    task start_dma;
         repeat (10) @(posedge Clk);
         Ena   <= 1'b1;
         repeat (10) @(posedge Clk);
         Start <= 1'b1;
-        Databus <= 'hAA;  // MSB
         @(posedge Clk);
         Start <= 1'b0;
+        Databus <= 'hAA;  // MSB
         repeat (10) @(posedge Clk);
     endtask: start_dma
 
 
-    task get_databus ();
+    task get_databus;
+        @(posedge Clk);
         Bus_grant <= 1'b1;
         @(posedge Clk);
         Bus_grant <= 1'b0;
@@ -96,7 +108,7 @@ module tb_dma_tx () ;
     endtask: get_databus
 
 
-    task wait_msb_send_lsb ();
+    task wait_msb_send_lsb;
         @(posedge TX_Ready);    // MSB
         @(posedge Clk);
         Databus <= 'hBB;
@@ -121,11 +133,14 @@ module tb_dma_tx () ;
         reset_system;
         start_dma;
         get_databus;
+        wait_msb_send_lsb;
 
+        repeat (500) @(posedge Clk);
         repeat (500) @(posedge Clk);
         $display("@%0d: TEST PASSED", $time);
         $finish;
     end
+
 
 
 endmodule // tb_dma_tx

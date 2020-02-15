@@ -83,7 +83,6 @@ module tb_uart () ;
         TX_Valid <= 1'b1;
         @(posedge Clk);
         TX_Valid <= 1'b0;
-        // repeat (BIT_CYCLES) @(posedge Clk);
         @(posedge TX_Ready);
         $display("@%0d: End of Serial TX", $time);
         @(posedge Clk); // Resync
@@ -118,6 +117,7 @@ module tb_uart () ;
     // Stimuli
     initial begin
         reset_system;
+
         repeat (3000) @(posedge Clk);
         serial_tx('hAA);
         repeat (3000) @(posedge Clk);
