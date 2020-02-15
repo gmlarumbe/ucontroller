@@ -7,8 +7,6 @@ package global_pkg;
 
     localparam integer RAM_DEPTH = 256;
 
-    // typedef logic[7:0] item_array8_ram;
-    // typedef item_array8_ram[RAM_DEPTH-1:0] array8_ram;
 
     //////////////////////////////////////////////////////////////////////////////-
     // Useful constants for addressing purposes

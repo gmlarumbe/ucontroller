@@ -16,31 +16,17 @@ module alu (
     localparam logic [7:0] ASCII_BINARY_0 = 8'b00110000;
     localparam logic [7:0] ASCII_BINARY_9 = 8'b00111001;
 
-    logic [7:0]            InA, InB, InAcc, InIndex;
-    logic                  InZ, InC, InN, InE, EnA, EnB, EnAcc, EnIndex, EnZ, EnC, EnN, EnE;
-    logic [7:0]            OutA, OutB, OutAcc, OutIndex;
+    logic [7:0] InA, InB, InAcc, InIndex;
+    logic 	InZ, InC, InN, InE, EnA, EnB, EnAcc, EnIndex, EnZ, EnC, EnN, EnE;
+    logic [7:0] OutA, OutB, OutAcc, OutIndex;
 
     always_comb begin
         OutData   = 'h0;
         Index_Reg = 'h0;
-
-        EnA       = 1'b0;
-        EnB       = 1'b0;
-        EnAcc     = 1'b0;
-        EnIndex   = 1'b0;
-        InA       = 'h0;
-        InB       = 'h0;
-        InAcc     = 'h0;
-        InIndex   = 'h0;
-
-        EnZ       = 1'b1;
-        EnC       = 1'b1;
-        EnN       = 1'b1;
-        EnE       = 1'b1;
-        InZ       = 1'b0;
-        InC       = 1'b0;
-        InN       = 1'b0;
-        InE       = 1'b0;
+        EnA = 1'b0 ; EnB = 1'b0; EnAcc = 1'b0; EnIndex = 1'b0;
+        EnZ = 1'b1 ; EnC = 1'b1; EnN   = 1'b1; EnE = 1'b1;
+        InA = 'h0  ; InB = 'h0;  InAcc = 'h0;  InIndex = 'h0;
+        InZ = 1'b0 ; InC = 1'b0; InN   = 1'b0; InE = 1'b0;
 
         unique case (u_instruction)
             nop : begin

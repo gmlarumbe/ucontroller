@@ -6,14 +6,14 @@ module tb_ram ();
     localparam CLKT = 10ns;  // 100 MHz
 
     // Non-auto signals
-    logic Clk = 1'b0;
-    logic Rst_n = 1'b1;
+    logic 	Clk 	= 1'b0;
+    logic 	Rst_n 	= 1'b1;
 
     logic [7:0] Address = '0;
-    logic Cs = '0;
-    logic [7:0] DataIn = '0;
-    logic Oen = '0;
-    logic Wen = '0;
+    logic 	Cs 	= '0;
+    logic [7:0] DataIn 	= '0;
+    logic 	Oen 	= '0;
+    logic 	Wen 	= '0;
 
     /* DUT Outputs */
     logic [7:0] DataOut;

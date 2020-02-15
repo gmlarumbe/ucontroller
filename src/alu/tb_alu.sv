@@ -7,15 +7,15 @@ module tb_alu () ;
     timeunit      1ns;
     localparam CLKT = 10ns;  // 100 MHz
 
-    logic Clk = 1'b0;
-    logic Rst_n = 1'b1;
+    logic 	Clk   = 1'b0;
+    logic 	Rst_n = 1'b1;
 
     logic [7:0] InData;
     logic [7:0] OutData;
-    logic FlagC;
-    logic FlagE;
-    logic FlagN;
-    logic FlagZ;
+    logic 	FlagC;
+    logic 	FlagE;
+    logic 	FlagN;
+    logic 	FlagZ;
     logic [7:0] Index_Reg;
 
     alu_op u_instruction;
