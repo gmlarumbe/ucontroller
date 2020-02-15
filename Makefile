@@ -22,9 +22,26 @@ UNISIMS_DIR=vivado/data/verilog/src/unisims
 ##############################
 all : all_elabs all_sims
 
-all_sims : misc_sim alu_sim uart_sim ram_sim dma_sim
+all_sims : misc_sim alu_sim uart_sim ram_sim dma_sim cpu_sim
 
-all_elabs: misc_elab alu_elab uart_elab ram_elab dma_elab
+all_elabs: misc_elab alu_elab uart_elab ram_elab dma_elab cpu_elab
+
+
+##############################
+# CPU
+##############################
+cpu_sim : cpu_elab
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_cpu.compiled src/pkg/global_pkg.sv src/cpu/cpu.sv src/cpu/tb_cpu.sv
+	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_cpu.compiled -$(WAVES_FORMAT)
+	mv tb_cpu.$(WAVES_FORMAT) $(WAVES_DIR)
+
+cpu_elab : cpu_src
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/dma.compiled src/pkg/global_pkg.sv src/cpu/cpu.sv
+	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/cpu/cpu.sv --top-module cpu
+
+cpu_src: global_pkg src/cpu/cpu.sv
+
+
 
 
 ##############################
@@ -37,12 +54,10 @@ dma_sim : dma_elab
 
 dma_elab : dma_src
 	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/dma.compiled src/pkg/global_pkg.sv src/dma/dma_rx.sv src/dma/dma_tx.sv src/dma/dma_arbiter.sv src/dma/dma.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/dma/dma_rx.sv src/dma/dma_tx.sv src/dma/dma_arbiter.sv src/dma/dma.sv
+	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/dma/dma_rx.sv src/dma/dma_tx.sv src/dma/dma_arbiter.sv src/dma/dma.sv --top-module dma
 
 dma_src: global_pkg src/dma/dma.sv
 
-
-dma_tx_src: global_pkg src/dma/dma_tx.sv
 
 
 ##############################

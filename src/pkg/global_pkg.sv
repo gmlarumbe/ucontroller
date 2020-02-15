@@ -1,98 +1,22 @@
 
 package global_pkg;
 
-    //////////////////////////////////////////////////////////////////////////////-
-    // Types for the RAM memory
-    //////////////////////////////////////////////////////////////////////////////-
-
+    // RAM params and addresses
     localparam integer RAM_DEPTH = 256;
 
+    localparam logic [7:0] DMA_RX_BUFFER_MSB = 'h00;
+    localparam logic [7:0] DMA_RX_BUFFER_MID = 'h01;
+    localparam logic [7:0] DMA_RX_BUFFER_LSB = 'h02;
+    localparam logic [7:0] NEW_INST          = 'h03;
+    localparam logic [7:0] DMA_TX_BUFFER_MSB = 'h04;
+    localparam logic [7:0] DMA_TX_BUFFER_LSB = 'h05;
+    localparam logic [7:0] SWITCH_BASE       = 'h10;
+    localparam logic [7:0] LEVER_BASE        = 'h20;
+    localparam logic [7:0] CAL_OP            = 'h30;
+    localparam logic [7:0] T_STAT            = 'h31;
+    localparam logic [7:0] GP_RAM_BASE       = 'h40;
 
-    //////////////////////////////////////////////////////////////////////////////-
-    // Useful constants for addressing purposes
-    //////////////////////////////////////////////////////////////////////////////-
-
-    localparam logic [7:0] DMA_RX_BUFFER_MSB  = 'h00;
-    localparam logic [7:0] DMA_RX_BUFFER_MID  = 'h01;
-    localparam logic [7:0] DMA_RX_BUFFER_LSB  = 'h02;
-    localparam logic [7:0] NEW_INST           = 'h03;
-    localparam logic [7:0] DMA_TX_BUFFER_MSB  = 'h04;
-    localparam logic [7:0] DMA_TX_BUFFER_LSB  = 'h05;
-    localparam logic [7:0] SWITCH_BASE        = 'h10;
-    localparam logic [7:0] LEVER_BASE         = 'h20;
-    localparam logic [7:0] CAL_OP             = 'h30;
-    localparam logic [7:0] T_STAT             = 'h31;
-    localparam logic [7:0] GP_RAM_BASE        = 'h40;
-
-    // //////////////////////////////////////////////////////////////////////////////-
-    // // Constants to define Type 1 instructions (ALU)
-    // //////////////////////////////////////////////////////////////////////////////-
-
-    // localparam TYPE_1        logic [1:0] = 'b00';
-    // localparam ALU_ADD       logic [5:0] = 'b000000';
-    // localparam ALU_SUB       logic [5:0] = 'b000001';
-    // localparam ALU_SHIFTL    logic [5:0] = 'b000010';
-    // localparam ALU_SHIFTR    logic [5:0] = 'b000011';
-    // localparam ALU_AND       logic [5:0] = 'b000100';
-    // localparam ALU_OR        logic [5:0] = 'b000101';
-    // localparam ALU_XOR       logic [5:0] = 'b000110';
-    // localparam ALU_CMPE      logic [5:0] = 'b000111';
-    // localparam ALU_CMPG      logic [5:0] = 'b001000';
-    // localparam ALU_CMPL      logic [5:0] = 'b001001';
-    // localparam ALU_ASCII2BIN logic [5:0] = 'b001010';
-    // localparam ALU_BIN2ASCII logic [5:0] = 'b001011';
-
-    // //////////////////////////////////////////////////////////////////////////////-
-    // // Constants to define Type 2 instructions (JUMP)
-    // //////////////////////////////////////////////////////////////////////////////-
-
-    // localparam TYPE_2     logic [1:0] = 'b01';
-    // localparam JMP_UNCOND logic [5:0] = 'b000000';
-    // localparam JMP_COND   logic [5:0] = 'b000001';
-
-    // //////////////////////////////////////////////////////////////////////////////-
-    // // Constants to define Type 3 instructions (LOAD & STORE)
-    // //////////////////////////////////////////////////////////////////////////////-
-
-    // localparam TYPE_3        logic [1:0] = 'b10';
-    // // instruction
-    // localparam L             logic = 'b0';
-    // localparam WR            logic = 'b1';
-    // // source
-    // localparam SRC_ACC       logic [1:0] = 'b00';
-    // localparam SRC_CONSTANT  logic [1:0] = 'b01';
-    // localparam SRC_MEM       logic [1:0] = 'b10';
-    // localparam SRC_INDXD_MEM logic [1:0] = 'b11';
-    // // destination
-    // localparam DST_ACC       logic [2:0] = 'b000';
-    // localparam DST_A         logic [2:0] = 'b001';
-    // localparam DST_B         logic [2:0] = 'b010';
-    // localparam DST_INDX      logic [2:0] = 'b011';
-    // localparam DST_MEM       logic [2:0] = 'b100';
-    // localparam DST_INDXD_MEM logic [2:0] = 'b101';
-
-
-    // //////////////////////////////////////////////////////////////////////////////-
-    // // Constantes utilizadas en los CASEs para evitar warnings (valores sin &)
-    // //////////////////////////////////////////////////////////////////////////////-
-
-
-    // localparam LD_SRC_CONSTANT     logic [2:0] = 'b001';
-    // localparam LD_SRC_MEM          logic [2:0] = 'b010';
-    // localparam LD_SRC_INDXD_MEM    logic [2:0] = 'b011';
-    // localparam WR_SRC_ACC          logic [2:0] = 'b100';
-
-    // //////////////////////////////////////////////////////////////////////////////-
-    // // Constants to define Type 4 instructions (SEND)
-    // //////////////////////////////////////////////////////////////////////////////-
-
-    // localparam TYPE_4        : [1:0] := 'b11';
-
-    // //////////////////////////////////////////////////////////////////////////////-
-    // // Type containing the ALU instruction set
-    // //////////////////////////////////////////////////////////////////////////////-
-
-
+    // CPU <-> alu interconnect types
     typedef enum logic[4:0] {
                  nop,                                  // no operation
                  op_lda, op_ldb, op_ldacc, op_ldid,    // external value load
@@ -103,6 +27,58 @@ package global_pkg;
                  op_ascii2bin, op_bin2ascii,           // conversion operations
                  op_oeacc                              // output enable
                  } alu_op;
+
+
+    ///////////////////
+    /* CPU constants */
+    ///////////////////
+    // Type 1 instructions (ALU)
+    localparam logic [1:0] TYPE_1         = 'b00;
+    localparam logic [5:0] ALU_ADD        = 'b000000;
+    localparam logic [5:0] ALU_SUB        = 'b000001;
+    localparam logic [5:0] ALU_SHIFTL     = 'b000010;
+    localparam logic [5:0] ALU_SHIFTR     = 'b000011;
+    localparam logic [5:0] ALU_AND        = 'b000100;
+    localparam logic [5:0] ALU_OR         = 'b000101;
+    localparam logic [5:0] ALU_XOR        = 'b000110;
+    localparam logic [5:0] ALU_CMPE       = 'b000111;
+    localparam logic [5:0] ALU_CMPG       = 'b001000;
+    localparam logic [5:0] ALU_CMPL       = 'b001001;
+    localparam logic [5:0] ALU_ASCII2BIN  = 'b001010;
+    localparam logic [5:0] ALU_BIN2ASCII  = 'b001011;
+
+    // Type 2 instructions (JUMP)
+    localparam logic [1:0] TYPE_2     = 'b01;
+    localparam logic [5:0] JMP_UNCOND = 'b000000;
+    localparam logic [5:0] JMP_COND   = 'b000001;
+
+
+    // Type 3 instructions (LOAD & STORE)
+    localparam logic [1:0] TYPE_3 = 'b10;
+    // Instruction
+    localparam logic LD = 1'b0;
+    localparam logic WR = 1'b1;
+    localparam logic [2:0] LD_SRC_CONSTANT  = 'b001;
+    localparam logic [2:0] LD_SRC_MEM       = 'b010;
+    localparam logic [2:0] LD_SRC_INDXD_MEM = 'b011;
+    localparam logic [2:0] WR_SRC_ACC       = 'b100;
+    // Source
+    localparam logic [1:0] SRC_ACC       = 'b00;
+    localparam logic [1:0] SRC_CONSTANT  = 'b01;
+    localparam logic [1:0] SRC_MEM       = 'b10;
+    localparam logic [1:0] SRC_INDXD_MEM = 'b11;
+    // Destination
+    localparam logic [2:0] DST_ACC       = 'b000;
+    localparam logic [2:0] DST_A         = 'b001;
+    localparam logic [2:0] DST_B         = 'b010;
+    localparam logic [2:0] DST_INDX      = 'b011;
+    localparam logic [2:0] DST_MEM       = 'b100;
+    localparam logic [2:0] DST_INDXD_MEM = 'b101;
+
+
+    // Type 4 instructions (SEND)
+    localparam logic [1:0] TYPE_4 = 'b11;
+
 
 
 endpackage: global_pkg
