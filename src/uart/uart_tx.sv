@@ -144,13 +144,9 @@ module uart_tx # (
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             data_reg <= 'h0;
-        end else begin
-            if (load_data == 1'b1) begin
-                data_reg <= Data;
-            end
-            else begin
-                data_reg <= 'h0;
-            end
+        end
+        else if (load_data == 1'b1) begin
+            data_reg <= Data;
         end
     end
 

@@ -42,31 +42,6 @@ dma_elab : dma_src
 dma_src: global_pkg src/dma/dma.sv
 
 
-
-
-dma_rx_sim : dma_rx_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_dma_rx.compiled -y$(UNISIMS_DIR) src/pkg/global_pkg.sv src/dma/dma_rx.sv src/dma/tb_dma_rx.sv src/uart/sreg.sv src/uart/uart_rx.sv src/uart/uart_tx.sv src/uart/uart.sv src/uart/fifo_generator_0_sim_netlist.v src/uart/fifo_wrapper.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_dma_rx.compiled -$(WAVES_FORMAT)
-	mv tb_dma_rx.$(WAVES_FORMAT) $(WAVES_DIR)
-
-dma_rx_elab : dma_rx_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/dma_rx.compiled src/pkg/global_pkg.sv src/dma/dma_rx.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/dma/dma_rx.sv
-
-dma_rx_src: global_pkg src/dma/dma_rx.sv
-
-
-
-
-dma_tx_sim : dma_tx_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_dma_tx.compiled -y$(UNISIMS_DIR) src/pkg/global_pkg.sv src/dma/dma_tx.sv src/dma/tb_dma_tx.sv src/uart/sreg.sv src/uart/uart_rx.sv src/uart/uart_tx.sv src/uart/uart.sv src/uart/fifo_generator_0_sim_netlist.v src/uart/fifo_wrapper.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_dma_tx.compiled -$(WAVES_FORMAT)
-	mv tb_dma_tx.$(WAVES_FORMAT) $(WAVES_DIR)
-
-dma_tx_elab : dma_tx_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/dma_tx.compiled src/pkg/global_pkg.sv src/dma/dma_tx.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/dma/dma_tx.sv
-
 dma_tx_src: global_pkg src/dma/dma_tx.sv
 
 
@@ -103,28 +78,6 @@ uart_elab : uart_src
 uart_src: global_pkg src/uart/sreg.sv src/uart/uart_rx.sv src/uart/uart_tx.sv src/uart/uart.sv src/uart/fifo_generator_0_sim_netlist.v src/uart/fifo_wrapper.sv
 
 
-uart_rx_sim : uart_rx_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_uart_rx.compiled src/pkg/global_pkg.sv src/uart/uart_rx.sv src/uart/tb_uart_rx.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_uart_rx.compiled -$(WAVES_FORMAT)
-	mv tb_uart_rx.$(WAVES_FORMAT) $(WAVES_DIR)
-
-uart_rx_elab : uart_rx_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/uart_rx.compiled src/pkg/global_pkg.sv src/uart/uart_rx.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/uart/uart_rx.sv --top-module uart_rx
-
-
-uart_rx_src: global_pkg src/uart/uart_rx.sv
-
-
-uart_tx_sim : uart_tx_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_uart_tx.compiled src/pkg/global_pkg.sv src/uart/uart_tx.sv src/uart/tb_uart_tx.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_uart_tx.compiled -$(WAVES_FORMAT)
-	mv tb_uart_tx.$(WAVES_FORMAT) $(WAVES_DIR)
-
-uart_tx_elab : uart_tx_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/uart_tx.compiled src/pkg/global_pkg.sv src/uart/uart_tx.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/uart/uart_tx.sv --top-module uart_tx
-
 uart_tx_src: global_pkg src/uart/uart_tx.sv
 
 
@@ -141,6 +94,7 @@ alu_elab : alu_src
 	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/alu/alu.sv --top-module alu
 
 alu_src: global_pkg src/alu/alu.sv
+
 
 ##############################
 # MISC

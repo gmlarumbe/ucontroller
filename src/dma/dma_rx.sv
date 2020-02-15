@@ -4,6 +4,7 @@ module dma_rx (
     input logic        Clk,
     input logic        Rst_n,
     input logic        Ena,
+    output logic       Dma_End,
     // System buses
     output logic [7:0] Address,
     output logic [7:0] Databus,
@@ -20,7 +21,7 @@ module dma_rx (
     input logic        Bus_grant
     );
 
-    typedef enum logic [2:0] {
+    typedef enum logic [3:0] {
                  IDLE,
                  BUS_REQUEST,
                  READ_MSB,
@@ -28,7 +29,8 @@ module dma_rx (
                  READ_MID,
                  RECEIVE_MID,
                  READ_LSB,
-                 RECEIVE_LSB
+                 RECEIVE_LSB,
+                 DMA_END
                  } state_t;
 
     state_t state, next_state;
@@ -43,6 +45,7 @@ module dma_rx (
         Cs         = 1'b0;
         Wena       = 1'b0;
         Bus_req    = 1'b0;
+        Dma_End    = 1'b0;
 
         if (Ena) begin
             unique case(state)
@@ -69,13 +72,13 @@ module dma_rx (
 
                 RECEIVE_MSB : begin
                     Bus_req = 1'b1;
-                    Cs 	    = 1'b1;
+                    Cs      = 1'b1;
                     Wena    = 1'b1;
                     Address = DMA_RX_BUFFER_MSB;
                     Databus = RX_Data;
                     if (!RX_Empty)
                         next_state = READ_MID;
-		    else 
+                    else
                         next_state = IDLE;
                 end
 
@@ -87,13 +90,13 @@ module dma_rx (
 
                 RECEIVE_MID : begin
                     Bus_req = 1'b1;
-                    Cs 	    = 1'b1;
+                    Cs      = 1'b1;
                     Wena    = 1'b1;
                     Address = DMA_RX_BUFFER_MID;
                     Databus = RX_Data;
-                    if (!RX_Empty) 
+                    if (!RX_Empty)
                         next_state = READ_LSB;
-		    else 
+                    else
                         next_state = IDLE;
                 end
 
@@ -105,10 +108,15 @@ module dma_rx (
 
                 RECEIVE_LSB : begin
                     Bus_req    = 1'b1;
-                    Cs 	       = 1'b1;
+                    Cs         = 1'b1;
                     Wena       = 1'b1;
                     Address    = DMA_RX_BUFFER_LSB;
                     Databus    = RX_Data;
+                    next_state = DMA_END;
+                end
+
+                DMA_END : begin
+                    Dma_End = 1'b1;
                     next_state = IDLE;
                 end
 
