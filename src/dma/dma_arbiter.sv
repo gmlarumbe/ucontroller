@@ -28,6 +28,7 @@ module dma_arbiter (
     state_t state;
 
 
+    // Seq FSM
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             state <= IDLE;
@@ -57,21 +58,9 @@ module dma_arbiter (
     end
 
 
-
-    // always_comb begin
-    //     unique case ({RX_Pending, TX_Start})
-    //         // TX has priority over RX
-    //         2'b00: arbiter = TX_ON;
-    //         2'b01: arbiter = TX_ON;
-    //         2'b10: arbiter = RX_ON;
-    //         2'b11: arbiter = RX_ON;
-    //     endcase
-    // end
-
-
+    // Comb Logic
     assign Enable_tx = (state == TX_ON || state == IDLE) ? 1'b1 : 1'b0;
     assign Enable_rx = (state == RX_ON)                  ? 1'b1 : 1'b0;
-
 
     always_comb begin
         unique case (state)

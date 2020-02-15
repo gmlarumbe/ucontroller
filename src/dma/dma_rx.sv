@@ -78,8 +78,10 @@ module dma_rx (
                     Databus = RX_Data;
                     if (!RX_Empty)
                         next_state = READ_MID;
-                    else
+                    else begin
                         next_state = IDLE;
+			Dma_End = 1'b1;
+		    end
                 end
 
                 READ_MID : begin
@@ -96,8 +98,10 @@ module dma_rx (
                     Databus = RX_Data;
                     if (!RX_Empty)
                         next_state = READ_LSB;
-                    else
+                    else begin
                         next_state = IDLE;
+			Dma_End = 1'b1;
+		    end
                 end
 
                 READ_LSB : begin

@@ -22,9 +22,9 @@ UNISIMS_DIR=vivado/data/verilog/src/unisims
 ##############################
 all : all_elabs all_sims
 
-all_sims : alu_sim uart_sim ram_sim dma_sim
+all_sims : misc_sim alu_sim uart_sim ram_sim dma_sim
 
-all_elabs: alu_elab uart_elab ram_elab dma_elab
+all_elabs: misc_elab alu_elab uart_elab ram_elab dma_elab
 
 
 ##############################
