@@ -15,13 +15,14 @@ module dma (
     output logic [7:0] DataOut,
     // RAM interface
     output logic       Cs,
-    output logic       Wena,
+    output logic       Wen,
     output logic       Oen,
     // CPU Interface
     output logic       Bus_req,
     input logic        Bus_grant,
     input logic        Dma_Tx_Start,
-    output logic       Dma_Tx_Ready
+    output logic       Dma_Tx_Ready,
+    output logic       Dma_Idle
     );
 
 
@@ -73,7 +74,7 @@ module dma (
         .Databus   (DataOut),
         .Data_Read (Data_Read),
         .Cs        (Cs_rx),
-        .Wena      (Wena),
+        .Wena      (Wen),
         .Bus_req   (Bus_req_rx)
         );
 
@@ -88,13 +89,13 @@ module dma (
         .RX_Pending   (!RX_Empty),
         .Dma_Rx_End   (Dma_Rx_End),
         // TX/RX arbitrating
+	.Dma_Idle     (Dma_Idle),
         .Address_tx   (Address_tx),
         .Address_rx   (Address_rx),
         .Cs_tx        (Cs_tx),
         .Cs_rx        (Cs_rx),
         .Bus_req_tx   (Bus_req_tx),
         .Bus_req_rx   (Bus_req_rx),
-        // Outputs
         .Enable_tx    (Ena_tx),
         .Enable_rx    (Ena_rx),
         .Address      (Address),

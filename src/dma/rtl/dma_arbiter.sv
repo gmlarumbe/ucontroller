@@ -7,6 +7,7 @@ module dma_arbiter (
     input logic        RX_Pending,
     input logic        Dma_Rx_End,
     // Arbitrating outputs
+    output logic       Dma_Idle,
     output logic       Enable_tx,
     output logic       Enable_rx,
     input logic [7:0]  Address_tx,
@@ -61,6 +62,7 @@ module dma_arbiter (
     // Comb Logic
     assign Enable_tx = (state == TX_ON || state == IDLE) ? 1'b1 : 1'b0;
     assign Enable_rx = (state == RX_ON)                  ? 1'b1 : 1'b0;
+    assign Dma_Idle  = (state == IDLE)			 ? 1'b1 : 1'b0;
 
     always_comb begin
         unique case (state)

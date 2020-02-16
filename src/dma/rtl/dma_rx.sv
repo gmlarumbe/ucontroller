@@ -105,8 +105,8 @@ module dma_rx (
                 end
 
                 READ_LSB : begin
-                    Bus_req = 1'b1;
-                    Data_Read = 1'b1;
+                    Bus_req    = 1'b1;
+                    Data_Read  = 1'b1;
                     next_state = RECEIVE_LSB;
                 end
 
@@ -120,7 +120,8 @@ module dma_rx (
                 end
 
                 DMA_END : begin
-                    Dma_End = 1'b1;
+                    Dma_End    = 1'b1;
+                    Bus_req    = 1'b1;
                     next_state = IDLE;
                 end
 

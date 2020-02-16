@@ -1,3 +1,5 @@
+import global_pkg::*;
+
 module regs_ram (
     input logic        Clk,
     input logic        Rst_n,

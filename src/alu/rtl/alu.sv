@@ -3,10 +3,9 @@ import global_pkg::*;
 module alu (
     input logic        Clk,
     input logic        Rst_n,
-    input              alu_op u_instruction,
+    input alu_op       ALU_op,
     input logic [7:0]  InData,
     output logic [7:0] OutData,
-    output logic [7:0] Index_Reg,
     output logic       FlagZ,
     output logic       FlagC,
     output logic       FlagN,
@@ -22,13 +21,12 @@ module alu (
 
     always_comb begin
         OutData   = 'h0;
-        Index_Reg = 'h0;
-        EnA = 1'b0 ; EnB = 1'b0; EnAcc = 1'b0; EnIndex = 1'b0;
-        EnZ = 1'b1 ; EnC = 1'b1; EnN   = 1'b1; EnE = 1'b1;
-        InA = 'h0  ; InB = 'h0;  InAcc = 'h0;  InIndex = 'h0;
-        InZ = 1'b0 ; InC = 1'b0; InN   = 1'b0; InE = 1'b0;
+        EnA = 1'b0;  EnB = 1'b0;  EnAcc = 1'b0;  EnIndex = 1'b0;
+        EnZ = 1'b1;  EnC = 1'b1;  EnN   = 1'b1;  EnE = 1'b1;
+        InA = 'h0 ;  InB = 'h0;   InAcc = 'h0;   InIndex = 'h0;
+        InZ = 1'b0;  InC = 1'b0;  InN   = 1'b0;  InE = 1'b0;
 
-        unique case (u_instruction)
+        unique case (ALU_op)
             nop : begin
                 ;
             end

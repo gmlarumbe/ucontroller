@@ -16,9 +16,8 @@ module tb_alu () ;
     logic 	FlagE;
     logic 	FlagN;
     logic 	FlagZ;
-    logic [7:0] Index_Reg;
 
-    alu_op u_instruction;
+    alu_op ALU_op;
 
     // System Clock
     always begin
@@ -29,10 +28,9 @@ module tb_alu () ;
     alu DUT (
         .Clk           (Clk),
         .Rst_n         (Rst_n),
-        .u_instruction (u_instruction),
+        .ALU_op        (ALU_op),
         .InData        (InData),
         .OutData       (OutData),
-        .Index_Reg     (Index_Reg),
         .FlagZ         (FlagZ),
         .FlagC         (FlagC),
         .FlagN         (FlagN),
@@ -53,7 +51,7 @@ module tb_alu () ;
     task execute_instruction (input alu_op inst, input logic[7:0] DATA = 'h0);
         localparam integer CYCLES = 10;
         repeat (CYCLES) @(posedge Clk);
-        u_instruction = inst;
+        ALU_op = inst;
         InData = DATA;
         repeat (CYCLES) @(posedge Clk);
     endtask : execute_instruction

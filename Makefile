@@ -3,134 +3,153 @@
 IVERILOG=iverilog
 IVERILOG_FLAGS=-g2012 -gassertions -Wall
 IVERILOG_CDIR=iver
-
 VVP=vvp
 VVP_FLAGS=
-
 VERILATOR=verilator
 VERILATOR_FLAGS=--lint-only +1800-2012ext+sv
 
 WAVES_FORMAT=lx2
 WAVES_DIR=waves
-
 SCRIPTSDIR=scripts
-
 UNISIMS_DIR=vivado/data/verilog/src/unisims
+
+
+## Commands for current targets
+LINT_CMD    = $(VERILATOR) $(VERILATOR_FLAGS) $^
+COMPILE_CMD = $(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/$@.compiled $^
+SIM_CMD	    = $(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/$@.compiled -$(WAVES_FORMAT)
+WAVES_CMD   = mv $@.$(WAVES_FORMAT) $(WAVES_DIR)
+
+
+#############
+## Sources
+#############
+pkg_rtl	 = $(wildcard src/pkg/*.sv)
+misc_rtl = $(wildcard src/misc/rtl/*.sv)
+misc_sim = $(wildcard src/misc/tb/*.sv)
+alu_rtl	 = $(wildcard src/alu/rtl/*.sv)
+alu_sim	 = $(wildcard src/alu/tb/*.sv)
+uart_rtl = $(wildcard src/uart/rtl/*.sv)
+uart_sim = $(wildcard src/uart/tb/*.sv) $(wildcard src/uart/tb/*.v)
+ram_rtl	 = $(wildcard src/ram/rtl/*.sv)
+ram_sim	 = $(wildcard src/ram/tb/*.sv)
+dma_rtl	 = $(wildcard src/dma/rtl/*.sv)
+dma_sim	 = $(wildcard src/dma/tb/*.sv)
+cpu_rtl	 = $(wildcard src/cpu/rtl/*.sv)
+cpu_sim	 = $(wildcard src/cpu/tb/*.sv)
+top_rtl	 = $(wildcard src/top/rtl/*.sv)
+top_sim	 = $(wildcard src/top/tb/*.sv)
+
+
 
 ##############################
 # All the targets
 ##############################
 all : all_elabs all_sims
 
-all_sims : misc_sim alu_sim uart_sim ram_sim dma_sim cpu_sim
+all_sims : tb_misc tb_alu tb_uart tb_ram tb_dma tb_cpu tb_top
 
-all_elabs: misc_elab alu_elab uart_elab ram_elab dma_elab cpu_elab
+all_elabs: misc alu uart ram dma cpu top
+
+
+
+##############################
+# TOP
+##############################
+tb_top : $(pkg_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_sim) $(top_sim)
+	$(COMPILE_CMD) -y$(UNISIMS_DIR)
+	$(SIM_CMD)
+	$(WAVES_CMD)
+
+top : $(pkg_rtl) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_sim)
+	$(COMPILE_CMD) -y$(UNISIMS_DIR)
+
 
 
 ##############################
 # CPU
 ##############################
-cpu_sim : cpu_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_cpu.compiled src/pkg/global_pkg.sv src/cpu/cpu.sv src/cpu/tb_cpu.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_cpu.compiled -$(WAVES_FORMAT)
-	mv tb_cpu.$(WAVES_FORMAT) $(WAVES_DIR)
+tb_cpu : $(pkg_rtl) $(cpu_rtl) $(cpu_sim)
+	$(COMPILE_CMD)
+	$(SIM_CMD)
+	$(WAVES_CMD)
 
-cpu_elab : cpu_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/dma.compiled src/pkg/global_pkg.sv src/cpu/cpu.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/cpu/cpu.sv --top-module cpu
-
-cpu_src: global_pkg src/cpu/cpu.sv
-
+cpu : $(pkg_rtl) $(cpu_rtl)
+	$(COMPILE_CMD)
+	$(LINT_CMD) --top-module $@
 
 
 
 ##############################
 # DMA
 ##############################
-dma_sim : dma_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_dma.compiled -y$(UNISIMS_DIR) src/pkg/global_pkg.sv src/dma/dma_rx.sv src/dma/dma_tx.sv src/dma/dma_arbiter.sv src/dma/dma.sv src/dma/tb_dma.sv src/uart/sreg.sv src/uart/uart_rx.sv src/uart/uart_tx.sv src/uart/uart.sv src/uart/fifo_generator_0_sim_netlist.v src/uart/fifo_wrapper.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_dma.compiled -$(WAVES_FORMAT)
-	mv tb_dma.$(WAVES_FORMAT) $(WAVES_DIR)
+tb_dma : $(pkg_rtl) $(dma_rtl) $(dma_sim) $(uart_rtl) $(uart_sim)
+	$(COMPILE_CMD) -y$(UNISIMS_DIR)
+	$(SIM_CMD)
+	$(WAVES_CMD)
 
-dma_elab : dma_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/dma.compiled src/pkg/global_pkg.sv src/dma/dma_rx.sv src/dma/dma_tx.sv src/dma/dma_arbiter.sv src/dma/dma.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/dma/dma_rx.sv src/dma/dma_tx.sv src/dma/dma_arbiter.sv src/dma/dma.sv --top-module dma
-
-dma_src: global_pkg src/dma/dma.sv
+dma : $(pkg_rtl) $(dma_rtl)
+	$(COMPILE_CMD)
+	$(LINT_CMD) --top-module $@
 
 
 
 ##############################
 # RAM
 ##############################
-ram_sim : ram_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_ram.compiled src/pkg/global_pkg.sv src/ram/ram.sv src/ram/gp_ram.sv src/ram/regs_ram.sv src/ram/tb_ram.sv src/misc/bin2bcd.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_ram.compiled -$(WAVES_FORMAT)
-	mv tb_ram.$(WAVES_FORMAT) $(WAVES_DIR)
+tb_ram : $(pkg_rtl) $(misc_rtl) $(ram_rtl) $(ram_sim)
+	$(COMPILE_CMD) -y$(UNISIMS_DIR)
+	$(SIM_CMD)
+	$(WAVES_CMD)
 
-ram_elab : ram_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/ram.compiled src/pkg/global_pkg.sv src/ram/ram.sv src/ram/gp_ram.sv src/ram/regs_ram.sv src/misc/bin2bcd.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/ram/ram.sv src/ram/gp_ram.sv src/ram/regs_ram.sv src/misc/bin2bcd.sv --top-module ram
-
-ram_src: global_pkg src/ram/ram.sv src/ram/gp_ram.sv src/ram/regs_ram.sv src/misc/bin2bcd.sv
+ram : $(pkg_rtl) $(misc_rtl) $(ram_rtl)
+	$(COMPILE_CMD)
+	$(LINT_CMD) --top-module $@
 
 
 
-##############################
-# UART
-##############################
-uart_sim : uart_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_uart.compiled -y$(UNISIMS_DIR) src/pkg/global_pkg.sv src/uart/sreg.sv src/uart/uart_rx.sv src/uart/uart_tx.sv src/uart/uart.sv src/uart/fifo_generator_0_sim_netlist.v src/uart/fifo_wrapper.sv src/uart/tb_uart.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_uart.compiled -$(WAVES_FORMAT)
-	mv tb_uart.$(WAVES_FORMAT) $(WAVES_DIR)
+####################################################
+# UART (no lint as Verilator has issues with Unisim)
+####################################################
+tb_uart : $(pkg_rtl) $(uart_rtl) $(uart_sim)
+	$(COMPILE_CMD) -y$(UNISIMS_DIR)
+	$(SIM_CMD)
+	$(WAVES_CMD)
 
-uart_elab : uart_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/uart.compiled -y$(UNISIMS_DIR) src/pkg/global_pkg.sv src/uart/sreg.sv src/uart/uart_rx.sv src/uart/uart_tx.sv src/uart/uart.sv src/uart/fifo_generator_0_sim_netlist.v src/uart/fifo_wrapper.sv
-	# Some constructs of the unisims library are not supported by Verilator ()
-	# $(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/uart/sreg.sv src/uart/uart_rx.sv src/uart/uart_tx.sv src/uart/uart.sv src/uart/fifo_generator_0_sim_netlist.v src/uart/fifo_wrapper.sv --top-module uart
-
-
-uart_src: global_pkg src/uart/sreg.sv src/uart/uart_rx.sv src/uart/uart_tx.sv src/uart/uart.sv src/uart/fifo_generator_0_sim_netlist.v src/uart/fifo_wrapper.sv
-
-
-uart_tx_src: global_pkg src/uart/uart_tx.sv
+uart : $(pkg_rtl) $(uart_rtl) $(uart_sim)
+	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 
 
 ##############################
 # ALU
 ##############################
-alu_sim : alu_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_alu.compiled src/pkg/global_pkg.sv src/alu/alu.sv src/alu/tb_alu.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_alu.compiled -$(WAVES_FORMAT)
-	mv tb_alu.$(WAVES_FORMAT) $(WAVES_DIR)
+tb_alu : $(pkg_rtl) $(alu_rtl) $(alu_sim)
+	$(COMPILE_CMD)
+	$(SIM_CMD)
+	$(WAVES_CMD)
 
-alu_elab : alu_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/alu.compiled src/pkg/global_pkg.sv src/alu/alu.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/alu/alu.sv --top-module alu
-
-alu_src: global_pkg src/alu/alu.sv
+alu : $(pkg_rtl) $(alu_rtl)
+	$(LINT_CMD) --top-module $@
+	$(COMPILE_CMD)
 
 
 ##############################
 # MISC
 ##############################
-misc_sim : misc_elab
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/tb_misc.compiled src/pkg/global_pkg.sv src/misc/bin2bcd.sv src/misc/tb_bin2bcd.sv
-	$(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/tb_misc.compiled -$(WAVES_FORMAT)
-	mv tb_misc.$(WAVES_FORMAT) $(WAVES_DIR)
+tb_misc : $(misc_rtl) $(misc_sim)
+	$(COMPILE_CMD)
+	$(SIM_CMD)
+	$(WAVES_CMD)
 
-misc_elab : misc_src
-	$(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/misc.compiled src/misc/bin2bcd.sv
-	$(VERILATOR) $(VERILATOR_FLAGS) src/pkg/global_pkg.sv src/misc/bin2bcd.sv --top-module bin2bcd
-
-misc_src: global_pkg src/misc/bin2bcd.sv
-
+misc : $(misc_rtl)
+	$(LINT_CMD) --top-module bin2bcd
+	$(COMPILE_CMD)
 
 
 ##############################
 # Global Package
 ##############################
-global_pkg : src/pkg/global_pkg.sv
+global_pkg : $(pkg_rtl)
 
 
 ##############################

@@ -35,7 +35,7 @@ module tb_dma () ;
     logic       Oen;
     logic [7:0] TX_Data;
     logic       TX_Valid;
-    logic       Wena;
+    logic       Wen;
 
 
     // System Clock
@@ -61,7 +61,7 @@ module tb_dma () ;
         .Address      (Address),
         // RAM interface
         .Cs           (Cs),
-        .Wena         (Wena),
+        .Wen          (Wen),
         .Oen          (Oen),
         // CPU interface
         .Bus_req      (Bus_req),
