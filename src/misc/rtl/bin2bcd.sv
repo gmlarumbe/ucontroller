@@ -1,7 +1,22 @@
-// Double Dabble algorithm to implement Binary to BCD conversion
+//-----------------------------------------------------------------------------
+// Title         : Binary to BCD converter
+// Project       : 
+//-----------------------------------------------------------------------------
+// File          : bin2bcd.sv
+// Author        : Gonzalo Martinez Larumbe
+// Created       : 2020/02/16
+// Last modified : 2020/02/16
+//-----------------------------------------------------------------------------
+// Description :
+// Double Dabble based Binary to BCD converter
+//   - https://en.wikipedia.org/wiki/Double_dabble
+//-----------------------------------------------------------------------------
+// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com> 
 //
-// https://en.wikipedia.org/wiki/Double_dabble
-//
+//------------------------------------------------------------------------------
+// Modification history :
+// 2020/02/16 : created
+//-----------------------------------------------------------------------------
 
 module bin2bcd # (
     parameter BIN_WIDTH = 8,

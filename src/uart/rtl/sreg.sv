@@ -1,3 +1,23 @@
+//-----------------------------------------------------------------------------
+// Title         : Shift Register
+// Project       : 
+//-----------------------------------------------------------------------------
+// File          : sreg.sv
+// Author        : Gonzalo Martinez Larumbe
+// Created       : 2020/02/16
+// Last modified : 2020/02/16
+//-----------------------------------------------------------------------------
+// Description :
+// 8-bit shift register to load UART rx data into FIFO
+//-----------------------------------------------------------------------------
+// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com> 
+//
+//------------------------------------------------------------------------------
+// Modification history :
+// 2020/02/16 : created
+//-----------------------------------------------------------------------------
+
+
 module sreg (
     input logic Clk,
     input logic Rst_n,

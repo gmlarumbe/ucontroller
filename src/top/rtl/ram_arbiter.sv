@@ -1,3 +1,23 @@
+//-----------------------------------------------------------------------------
+// Title         : RAM Arbiter
+// Project       : 
+//-----------------------------------------------------------------------------
+// File          : ram_arbiter.sv
+// Author        : Gonzalo Martinez Larumbe
+// Created       : 2020/02/16
+// Last modified : 2020/02/16
+//-----------------------------------------------------------------------------
+// Description :
+// Arbitrating between DMA and CPU for RAM buses and control signals
+//-----------------------------------------------------------------------------
+// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com> 
+//
+//------------------------------------------------------------------------------
+// Modification history :
+// 2020/02/16 : created
+//-----------------------------------------------------------------------------
+
+
 module ram_arbiter (
     input logic        Clk,
     input logic        Rst_n,
