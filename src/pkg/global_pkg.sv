@@ -52,21 +52,14 @@ package global_pkg;
     localparam logic [5:0] JMP_UNCOND = 'b000000;
     localparam logic [5:0] JMP_COND   = 'b000001;
 
-
     // Type 3 instructions (LOAD & STORE)
     localparam logic [1:0] TYPE_3 = 'b10;
-    // Instruction
-    localparam logic LD = 1'b0;
-    localparam logic WR = 1'b1;
+    // Source
+    localparam logic [2:0] LD_SRC_ACC       = 'b000;
     localparam logic [2:0] LD_SRC_CONSTANT  = 'b001;
     localparam logic [2:0] LD_SRC_MEM       = 'b010;
     localparam logic [2:0] LD_SRC_INDXD_MEM = 'b011;
     localparam logic [2:0] WR_SRC_ACC       = 'b100;
-    // Source
-    localparam logic [1:0] SRC_ACC       = 'b00;
-    localparam logic [1:0] SRC_CONSTANT  = 'b01;
-    localparam logic [1:0] SRC_MEM       = 'b10;
-    localparam logic [1:0] SRC_INDXD_MEM = 'b11;
     // Destination
     localparam logic [2:0] DST_ACC       = 'b000;
     localparam logic [2:0] DST_A         = 'b001;
@@ -74,7 +67,6 @@ package global_pkg;
     localparam logic [2:0] DST_INDX      = 'b011;
     localparam logic [2:0] DST_MEM       = 'b100;
     localparam logic [2:0] DST_INDXD_MEM = 'b101;
-
 
     // Type 4 instructions (SEND)
     localparam logic [1:0] TYPE_4 = 'b11;

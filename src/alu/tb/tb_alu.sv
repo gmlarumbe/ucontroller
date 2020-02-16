@@ -7,15 +7,15 @@ module tb_alu () ;
     timeunit      1ns;
     localparam CLKT = 10ns;  // 100 MHz
 
-    logic 	Clk   = 1'b0;
-    logic 	Rst_n = 1'b1;
+    logic       Clk   = 1'b0;
+    logic       Rst_n = 1'b1;
 
     logic [7:0] InData;
     logic [7:0] OutData;
-    logic 	FlagC;
-    logic 	FlagE;
-    logic 	FlagN;
-    logic 	FlagZ;
+    logic       FlagC;
+    logic       FlagE;
+    logic       FlagN;
+    logic       FlagZ;
 
     alu_op ALU_op;
 
@@ -26,15 +26,15 @@ module tb_alu () ;
 
     // DUT
     alu DUT (
-        .Clk           (Clk),
-        .Rst_n         (Rst_n),
-        .ALU_op        (ALU_op),
-        .InData        (InData),
-        .OutData       (OutData),
-        .FlagZ         (FlagZ),
-        .FlagC         (FlagC),
-        .FlagN         (FlagN),
-        .FlagE         (FlagE)
+        .Clk     (Clk),
+        .Rst_n   (Rst_n),
+        .ALU_op  (ALU_op),
+        .InData  (InData),
+        .OutData (OutData),
+        .FlagZ   (FlagZ),
+        .FlagC   (FlagC),
+        .FlagN   (FlagN),
+        .FlagE   (FlagE)
         );
 
 
