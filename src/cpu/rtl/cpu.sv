@@ -187,8 +187,8 @@ module cpu (
                     end
                     default : ;
                 endcase
-                ALU_op  = op_oeacc;
-                DataOut = ALU_DataOut;
+                ALU_op 	   = op_oeacc;
+                DataOut    = ALU_DataOut;
                 next_state = IDLE;
             end
             default : ;

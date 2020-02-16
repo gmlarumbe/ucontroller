@@ -73,18 +73,25 @@ module automatic tb_program (
         ROM['h9]  = {TYPE_1, ALU_SHIFTL}; // SHL
         ROM['hA]  = {TYPE_1, ALU_SHIFTR}; // SHR
         // Jump to address 0x30
-        ROM['hB] = {TYPE_1, ALU_ASCII2BIN};
-        ROM['hC] = {TYPE_1, ALU_BIN2ASCII};
-        ROM['hD] = {TYPE_1, ALU_AND};
-        ROM['hE] = {TYPE_2, JMP_UNCOND};
-        ROM['hF] = 8'h20;
-
-        // BUG: Iverilog freezes if infinite main loop is inferred
-        // ROM['h20] = {TYPE_2, JMP_UNCOND};
-        // ROM['h21] = 8'h0;
-        // BUG: Iverilog also hangs for DMA_TX requests
-        ROM['h20] = {TYPE_4, 6'h0};
-
+        ROM['hB]  = {TYPE_1, ALU_ASCII2BIN};
+        ROM['hC]  = {TYPE_1, ALU_BIN2ASCII};
+        ROM['hD]  = {TYPE_1, ALU_AND};
+        ROM['hE]  = {TYPE_2, JMP_UNCOND};
+        ROM['hF]  = 8'h20;
+	// DMA TX
+        ROM['h20] = {TYPE_3, LD_SRC_CONSTANT, DST_ACC}; // Load DMA TX registers:
+        ROM['h21] = 'hAB;				// Requires write to acc and 
+        ROM['h22] = {TYPE_3, WR_SRC_ACC, DST_MEM};	// from acc to mem.
+        ROM['h23] = DMA_TX_BUFFER_MSB;			// One for MSB and other
+        ROM['h24] = {TYPE_3, LD_SRC_CONSTANT, DST_ACC}; // for LSB
+        ROM['h25] = 'hCD;				
+        ROM['h26] = {TYPE_3, WR_SRC_ACC, DST_MEM};	
+        ROM['h27] = DMA_TX_BUFFER_LSB;			
+	// TX Enable
+        ROM['h28] = {TYPE_4, 6'h0};
+	// Infinite loop
+        ROM['h29] = {TYPE_2, JMP_UNCOND};
+        ROM['h2A] = 8'h20;
     endtask: init_rom
 
 
@@ -133,7 +140,6 @@ module automatic tb_program (
         repeat (1000) @(posedge Clk);
         $finish;
     end
-
 
     initial begin
         #10ms;
