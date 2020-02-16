@@ -34,13 +34,13 @@ module tb_cpu () ;
     /* DUT Inputs */
     logic [11:0] ROM_Data;
     logic [7:0]  DataIn      = '0;
-    logic        DMA_Ready   = '0;
-    logic        DMA_Req     = '0;
-    logic        FlagC       = '0;
-    logic        FlagE       = '0;
-    logic        FlagN       = '0;
-    logic        FlagZ       = '0;
     logic [7:0]  ALU_DataOut = '0;
+    logic        DMA_Ready   = 1'b1;
+    logic        DMA_Req     = 1'b0;
+    logic        FlagC       = 1'b0;
+    logic        FlagE       = 1'b0;
+    logic        FlagN       = 1'b0;
+    logic        FlagZ       = 1'b0;
 
     /* DUT Outputs */
     alu_op       ALU_op;
@@ -52,7 +52,6 @@ module tb_cpu () ;
     logic        RAM_Oen;
     logic        RAM_Wen;
     logic [11:0] ROM_Addr;
-
     logic [7:0]  ALU_DataIn;
     logic [7:0]  DataOut;
 
@@ -130,15 +129,13 @@ module tb_cpu () ;
         ROM['hB] = {TYPE_1, ALU_ASCII2BIN};
         ROM['hC] = {TYPE_1, ALU_BIN2ASCII};
         ROM['hD] = {TYPE_1, ALU_AND};
+        // DMA_TX
+        ROM['hD] = {TYPE_4, 6'h0};
         ROM['hE] = {TYPE_2, JMP_UNCOND};
         ROM['hF] = 8'h20;
-
-        // BUG: Iverilog freezes if infinite main loop is inferred
-        // ROM['h20] = {TYPE_2, JMP_UNCOND};
-        // ROM['h21] = 8'h0;
-        // BUG: Iverilog also hangs for DMA_TX requests
-        // ROM['h20] = {TYPE_4, 6'h0};
-
+        // Infinite end loop
+        ROM['h20] = {TYPE_2, JMP_UNCOND};
+        ROM['h21] = 8'h20;
     endtask: init_rom
 
 
@@ -151,13 +148,36 @@ module tb_cpu () ;
         repeat (10) @(posedge Clk);
     endtask : reset_system
 
+
+    task dma_req ();
+	// CPU must grant buses to DMA and stay @ IDLE
+	DMA_Req <= 1'b1;
+        repeat (1000) @(posedge Clk);
+	DMA_Req <= 1'b0;
+    endtask: dma_req
+
+
     // Stimuli
     initial begin
         init_rom;
         reset_system;
-        repeat (100) @(posedge Clk);
+        repeat (1000) @(posedge Clk);
+	dma_req;
+        repeat (1000) @(posedge Clk);
         $display("@%0d: TEST PASSED", $time);
         $finish;
+    end
+
+
+    // TX DMA Management
+    initial begin
+	@(posedge DMA_Tx_Start);
+	@(posedge Clk);
+	DMA_Ready <= 1'b0;
+	DMA_Req   <= 1'b1;
+	repeat (100) @(posedge Clk);
+	DMA_Req   <= 1'b0;
+	DMA_Ready <= 1'b1;
     end
 
 

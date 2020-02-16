@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // Title         : CPU
-// Project       : 
+// Project       :
 //-----------------------------------------------------------------------------
 // File          : cpu.sv
 // Author        : Gonzalo Martinez Larumbe
@@ -8,9 +8,9 @@
 // Last modified : 2020/02/16
 //-----------------------------------------------------------------------------
 // Description :
-// 
+//
 //-----------------------------------------------------------------------------
-// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com> 
+// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
 //
 //------------------------------------------------------------------------------
 // Modification history :
@@ -55,7 +55,8 @@ module cpu (
                  FETCH,
                  DECODE,
                  EXECUTE,
-                 READ_MEM
+                 READ_MEM,
+		 WAIT_DMA
                  } state_t;
 
     state_t state, next_state;
@@ -127,13 +128,8 @@ module cpu (
 
     task automatic decode_type4_inst ();
         unique case (rom_instruction[5:0])
-            6'b000000 : begin
-                pc_ena       = 1'b1;
-                addr         = addr_aux + 12'h1;
-                DMA_Tx_Start = 1'b1;
-                next_state = IDLE;
-            end
-            default : next_state = IDLE;
+            6'b000000 : DMA_Tx_Start = 1'b1;
+            default   : ;
         endcase
         next_state = IDLE;
     endtask: decode_type4_inst
@@ -210,7 +206,7 @@ module cpu (
         RAM_Cs            = 1'b0;
         RAM_Wen           = 1'b0;
         RAM_Oen           = 1'b0;
-        DMA_Ack           = 1'b0;
+        // DMA_Ack           = 1'b0;
         DMA_Tx_Start      = 1'b0;
         ALU_op            = nop;
         // Internal signals
@@ -220,13 +216,10 @@ module cpu (
 
         unique case (state)
             IDLE : begin
-                if (DMA_Req) begin
-                    DMA_Ack = 1'b1;
-                    next_state = IDLE;
-                end
-                else begin
+                if (DMA_Req) 
+                    next_state = WAIT_DMA;
+                else
                     next_state = FETCH;
-                end
             end
 
             FETCH : begin
@@ -267,6 +260,11 @@ module cpu (
                 next_state = IDLE;
             end
 
+	    WAIT_DMA : begin
+		if (!DMA_Req)
+		    next_state = IDLE;
+	    end
+
 	    default : ;
 
         endcase
@@ -301,6 +299,18 @@ module cpu (
             rom_aux <= ROM_Data;
         end
     end
+
+
+    always_ff @(posedge Clk) begin
+	if (!Rst_n) begin
+	    DMA_Ack <= 1'h0;
+	end
+	else if (state == IDLE && DMA_Req)
+            DMA_Ack <= 1'b1;
+	else
+            DMA_Ack <= 1'b0;
+    end
+
 
     // Seq FSM
     always_ff @(posedge Clk) begin

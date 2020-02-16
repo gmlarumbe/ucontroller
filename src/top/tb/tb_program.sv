@@ -83,7 +83,7 @@ module automatic tb_program (
         // ROM['h20] = {TYPE_2, JMP_UNCOND};
         // ROM['h21] = 8'h0;
         // BUG: Iverilog also hangs for DMA_TX requests
-        // ROM['h20] = {TYPE_4, 6'h0};
+        ROM['h20] = {TYPE_4, 6'h0};
 
     endtask: init_rom
 
