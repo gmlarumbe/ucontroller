@@ -1,35 +1,35 @@
 import global_pkg::*;
 
 module cpu (
-    input logic 	Clk,
-    input logic 	Rst_n,
-
-    input logic [11:0] 	ROM_Data,
+    input logic         Clk,
+    input logic         Rst_n,
+    // ROM Interface
+    input logic [11:0]  ROM_Data,
     output logic [11:0] ROM_Addr,
-
-    output logic [7:0] 	RAM_Addr,
-    output logic 	RAM_Cs,
-    output logic 	RAM_Wen,
-    output logic 	RAM_Oen,
-    output logic [7:0] 	DataOut,
-    input logic [7:0] 	DataIn,
-
-    input logic 	DMA_Req,
-    output logic 	DMA_Ack,
-    output logic 	DMA_Tx_Start,
-    input logic 	DMA_Ready,
-
+    // RAM Interface
+    output logic [7:0]  RAM_Addr,
+    output logic        RAM_Cs,
+    output logic        RAM_Wen,
+    output logic        RAM_Oen,
+    output logic [7:0]  DataOut,
+    input logic [7:0]   DataIn,
+    // DMA interface
+    input logic         DMA_Req,
+    output logic        DMA_Ack,
+    output logic        DMA_Tx_Start,
+    input logic         DMA_Ready,
+    // ALU interface
     output alu_op       ALU_op,
-    input logic [7:0] 	ALU_DataOut,
-    output logic [7:0] 	ALU_DataIn,
-    input logic 	FlagZ,
-    input logic 	FlagC,
-    input logic 	FlagN,
-    input logic 	FlagE
+    input logic [7:0]   ALU_DataOut,
+    output logic [7:0]  ALU_DataIn,
+    input logic         FlagZ,
+    input logic         FlagC,
+    input logic         FlagN,
+    input logic         FlagE
     );
 
 
-
+    // Types
     typedef enum logic[1:0] {
                  IDLE,
                  FETCH,
@@ -39,17 +39,18 @@ module cpu (
 
     state_t state, next_state;
 
-
+    // Signals
     logic        pc_ena;
     logic        load_inst;
     logic        load_inst_auxbyte;
     logic [11:0] rom_instruction;
     logic [11:0] rom_aux;
-    logic [11:0] addr;
+    logic [11:0] addr = 'h0;
     logic [11:0] addr_aux;
+    logic [11:0] alu_data = 'h0;
 
 
-
+    // Auxiliary tasks
     task automatic decode_type1_inst ();
         case (rom_instruction[5:0])
             ALU_ADD       : ALU_op = op_add;
@@ -66,55 +67,54 @@ module cpu (
             ALU_BIN2ASCII : ALU_op = op_bin2ascii;
             default       : ;
         endcase
-	
-        pc_ena 	   = 1'b1;
-        addr 	   = addr_aux + 12'h001;
+
+        pc_ena     = 1'b1;
+        addr       = addr_aux + 12'h1;
         next_state = IDLE;
     endtask: decode_type1_inst
 
 
 
     task automatic decode_type2_inst ();
-        pc_ena 		  = 1'b1;
+        pc_ena            = 1'b1;
         load_inst_auxbyte = 1'b1;
-        addr 		  = addr_aux + 12'h1;
-        next_state 	  = EXECUTE;
+        addr              = addr_aux + 12'h1;
+        next_state        = EXECUTE;
     endtask: decode_type2_inst
 
 
 
     task automatic decode_type3_inst ();
-        if (rom_instruction[5:3] == {LD, SRC_ACC}) begin
+        if (rom_instruction[5:3] == {LD, SRC_ACC}) begin // Acc LD instructions are 1byte
             unique case (rom_instruction[2:0])
                 DST_A    : ALU_op = op_mvacc2a;
                 DST_B    : ALU_op = op_mvacc2b;
                 DST_INDX : ALU_op = op_mvacc2id;
                 default  : ;
-            endcase
+            endcase // DST_MEM and DST_INDXD_MEM accessed via WR
             next_state = IDLE;
         end
 
-        else begin
+        else begin // 2-byte instructions
             load_inst_auxbyte = 1'b1;
-            next_state = EXECUTE;
+            next_state        = EXECUTE;
         end
-	
+
         pc_ena = 1'b1;
-        addr = addr_aux + 12'h001;			
+        addr   = addr_aux + 12'h1;
     endtask: decode_type3_inst
 
 
 
     task automatic decode_type4_inst ();
         unique case (rom_instruction[5:0])
-            6'b000000 : begin
-                pc_ena = 1'b1;
-                addr = addr_aux + 12'h001;
+            6'h0 : begin
+                pc_ena       = 1'b1;
+                addr         = addr_aux + 12'h1;
                 DMA_Tx_Start = 1'b1;
-                next_state = IDLE;
+                next_state   = IDLE;
             end
-            default : begin
-            end
+            default : ;
         endcase
     endtask: decode_type4_inst
 
@@ -124,79 +124,48 @@ module cpu (
         unique case (rom_instruction[5:0])
             JMP_UNCOND : begin
                 pc_ena = 1'b1;
-                addr = rom_aux;
+                addr   = rom_aux; // 2nd byte points to jump address
             end
             JMP_COND : begin
                 if (FlagZ) begin
                     pc_ena = 1'b1;
-                    addr = rom_aux;
+                    addr   = rom_aux;
                 end
                 else begin
                     pc_ena = 1'b1;
-                    addr = addr_aux + 12'h001;
+                    addr   = addr_aux + 12'h1;
                 end
             end
             default : ;
         endcase
         next_state = IDLE;
     endtask : execute_type2_inst
-    
+
 
 
     task automatic execute_type3_inst ();
         unique case (rom_instruction[5:3])
             LD_SRC_CONSTANT : begin
                 unique case (rom_instruction[2:0])
-                    DST_A : begin
-                        DataOut = rom_aux[7:0];
-                        ALU_op = op_lda;
-                    end
-                    DST_B : begin
-                        DataOut = rom_aux[7:0];
-                        ALU_op = op_ldb;
-                    end
-                    DST_ACC : begin
-                        DataOut = rom_aux[7:0];
-                        ALU_op = op_ldacc;
-                    end
-                    DST_INDX : begin
-                        DataOut = rom_aux[7:0];
-                        ALU_op = op_ldid;
-                    end
+                    DST_A    : ALU_op = op_lda;
+                    DST_B    : ALU_op = op_ldb;
+                    DST_ACC  : ALU_op = op_ldacc;
+                    DST_INDX : ALU_op = op_ldid;
                     default : begin
-                        pc_ena = 1'b1;
-                        addr = addr_aux + 12'h001;
+                        pc_ena     = 1'b1;
+                        addr       = addr_aux + 12'h001;
                         next_state = IDLE;
                     end
                 endcase
+                alu_data = rom_aux[7:0]; // 2nd byte sent to ALU along with the kind of op to perform
             end
 
             LD_SRC_MEM : begin
                 unique case (rom_instruction[2:0])
-                    DST_ACC : begin
-                        RAM_Cs = 1'b1;
-                        RAM_Oen = 1'b1;
-                        RAM_Addr = rom_aux[7:0];
-                        ALU_op = op_ldacc;
-                    end
-                    DST_A : begin
-                        RAM_Cs = 1'b1;
-                        RAM_Oen = 1'b1;
-                        RAM_Addr = rom_aux[7:0];
-                        ALU_op = op_lda;
-                    end
-                    DST_B : begin
-                        RAM_Cs = 1'b1;
-                        RAM_Oen = 1'b1;
-                        RAM_Addr = rom_aux[7:0];
-                        ALU_op = op_ldb;
-                    end
-                    DST_INDX : begin
-                        RAM_Cs = 1'b1;
-                        RAM_Oen = 1'b1;
-                        RAM_Addr = rom_aux[7:0];
-                        ALU_op = op_ldid;
-                    end
+                    DST_ACC  : ALU_op = op_ldacc;
+                    DST_A    : ALU_op = op_lda;
+                    DST_B    : ALU_op = op_ldb;
+                    DST_INDX : ALU_op = op_ldid;
                     default : begin
                         pc_ena = 1'b1;
                         addr = addr_aux + 12'h001;
@@ -204,50 +173,25 @@ module cpu (
                     end
                 endcase
 
+                RAM_Cs   = 1'b1;
+                RAM_Oen  = 1'b1;
+                RAM_Addr = rom_aux[7:0];
+            end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            LD_SRC_INDXD_MEM : begin // TODO
+                ;
             end
 
             WR_SRC_ACC : begin
                 unique case (rom_instruction[2:0])
                     DST_MEM : begin
-                        RAM_Cs = 1'b1;
-                        RAM_Wen = 1'b1;
+                        RAM_Cs   = 1'b1;
+                        RAM_Wen  = 1'b1;
                         RAM_Addr = rom_aux[7:0];
-
-
-
-
-
                     end
                     default : begin
-                        pc_ena = 1'b1;
-                        addr = addr_aux + 12'h001;
+                        pc_ena     = 1'b1;
+                        addr       = addr_aux + 12'h001;
                         next_state = IDLE;
                     end
                 endcase
@@ -258,9 +202,9 @@ module cpu (
 
 
 
-
+    // Comb FSM
     always_comb begin
-
+        // Ports
         DataOut           = 'h0;
         RAM_Addr          = 'h0;
         RAM_Cs            = 1'b0;
@@ -269,7 +213,7 @@ module cpu (
         DMA_Ack           = 1'b0;
         DMA_Tx_Start      = 1'b0;
         ALU_op            = nop;
-
+        // Internal signals
         pc_ena            = 1'b0;
         load_inst         = 1'b0;
         load_inst_auxbyte = 1'b0;
@@ -293,18 +237,19 @@ module cpu (
 
             DECODE : begin
                 unique case (rom_instruction[7:6])
-                    TYPE_1 : decode_type1_inst();
-                    TYPE_2 : decode_type2_inst();
+                    TYPE_1 : decode_type1_inst();  // 1-byte instruction
+                    TYPE_2 : decode_type2_inst();  // 2-byte instruction
                     TYPE_3 : decode_type3_inst();
                     TYPE_4 : decode_type4_inst();
                     default : ;
                 endcase
             end
 
-            EXECUTE : begin
+            EXECUTE : begin // 2-byte instruction execution state
                 unique case (rom_instruction[7:6])
                     TYPE_2 : execute_type2_inst();
                     TYPE_3 : execute_type3_inst();
+                    // TODO: Implement further instructions
                     default : ;
                 endcase
             end
@@ -312,7 +257,7 @@ module cpu (
     end
 
 
-
+    // Program Counter
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             ROM_Addr <= 'h0;
@@ -323,7 +268,7 @@ module cpu (
         end
     end
 
-
+    // Instruction registering
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             rom_instruction <= 'h0;
@@ -332,7 +277,7 @@ module cpu (
         end
     end
 
-
+    // Temporal storage for execution of 2-byte instructions
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             rom_aux <= 'h0;
@@ -341,7 +286,7 @@ module cpu (
         end
     end
 
-
+    // Seq FSM
     always_ff @(posedge Clk) begin
         if (!Rst_n) begin
             state <= IDLE;
@@ -349,6 +294,9 @@ module cpu (
             state <= next_state;
         end
     end
+
+    // Aux comb logic
+    assign ALU_DataIn = alu_data;
 
 
 endmodule

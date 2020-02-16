@@ -24,7 +24,7 @@ WAVES_CMD   = mv $@.$(WAVES_FORMAT) $(WAVES_DIR)
 #############
 ## Sources
 #############
-pkg_rtl	 = $(wildcard src/pkg/*.sv)
+pkg	 = $(wildcard src/pkg/*.sv)
 misc_rtl = $(wildcard src/misc/rtl/*.sv)
 misc_sim = $(wildcard src/misc/tb/*.sv)
 alu_rtl	 = $(wildcard src/alu/rtl/*.sv)
@@ -56,12 +56,12 @@ all_elabs: misc alu uart ram dma cpu top
 ##############################
 # TOP
 ##############################
-tb_top : $(pkg_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_sim) $(top_sim)
+tb_top : $(pkg) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_sim) $(top_sim)
 	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 	$(SIM_CMD)
 	$(WAVES_CMD)
 
-top : $(pkg_rtl) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_sim)
+top : $(pkg) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_sim)
 	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 
 
@@ -69,12 +69,12 @@ top : $(pkg_rtl) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_
 ##############################
 # CPU
 ##############################
-tb_cpu : $(pkg_rtl) $(cpu_rtl) $(cpu_sim)
+tb_cpu : $(pkg) $(cpu_rtl) $(cpu_sim)
 	$(COMPILE_CMD)
 	$(SIM_CMD)
 	$(WAVES_CMD)
 
-cpu : $(pkg_rtl) $(cpu_rtl)
+cpu : $(pkg) $(cpu_rtl)
 	$(COMPILE_CMD)
 	$(LINT_CMD) --top-module $@
 
@@ -83,12 +83,12 @@ cpu : $(pkg_rtl) $(cpu_rtl)
 ##############################
 # DMA
 ##############################
-tb_dma : $(pkg_rtl) $(dma_rtl) $(dma_sim) $(uart_rtl) $(uart_sim)
+tb_dma : $(pkg) $(dma_rtl) $(dma_sim) $(uart_rtl) $(uart_sim)
 	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 	$(SIM_CMD)
 	$(WAVES_CMD)
 
-dma : $(pkg_rtl) $(dma_rtl)
+dma : $(pkg) $(dma_rtl)
 	$(COMPILE_CMD)
 	$(LINT_CMD) --top-module $@
 
@@ -97,12 +97,12 @@ dma : $(pkg_rtl) $(dma_rtl)
 ##############################
 # RAM
 ##############################
-tb_ram : $(pkg_rtl) $(misc_rtl) $(ram_rtl) $(ram_sim)
+tb_ram : $(pkg) $(misc_rtl) $(ram_rtl) $(ram_sim)
 	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 	$(SIM_CMD)
 	$(WAVES_CMD)
 
-ram : $(pkg_rtl) $(misc_rtl) $(ram_rtl)
+ram : $(pkg) $(misc_rtl) $(ram_rtl)
 	$(COMPILE_CMD)
 	$(LINT_CMD) --top-module $@
 
@@ -111,24 +111,24 @@ ram : $(pkg_rtl) $(misc_rtl) $(ram_rtl)
 ####################################################
 # UART (no lint as Verilator has issues with Unisim)
 ####################################################
-tb_uart : $(pkg_rtl) $(uart_rtl) $(uart_sim)
+tb_uart : $(pkg) $(uart_rtl) $(uart_sim)
 	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 	$(SIM_CMD)
 	$(WAVES_CMD)
 
-uart : $(pkg_rtl) $(uart_rtl) $(uart_sim)
+uart : $(pkg) $(uart_rtl) $(uart_sim)
 	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 
 
 ##############################
 # ALU
 ##############################
-tb_alu : $(pkg_rtl) $(alu_rtl) $(alu_sim)
+tb_alu : $(pkg) $(alu_rtl) $(alu_sim)
 	$(COMPILE_CMD)
 	$(SIM_CMD)
 	$(WAVES_CMD)
 
-alu : $(pkg_rtl) $(alu_rtl)
+alu : $(pkg) $(alu_rtl)
 	$(LINT_CMD) --top-module $@
 	$(COMPILE_CMD)
 
@@ -149,7 +149,7 @@ misc : $(misc_rtl)
 ##############################
 # Global Package
 ##############################
-global_pkg : $(pkg_rtl)
+global_pkg : $(pkg)
 
 
 ##############################
