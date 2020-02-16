@@ -32,7 +32,7 @@ alu_rtl  = $(wildcard src/alu/rtl/*.sv)
 alu_sim  = $(wildcard src/alu/tb/*.sv)
 uart_rtl = $(wildcard src/uart/rtl/*.sv)
 uart_viv = $(wildcard src/uart/tb/*.v) # FIFO Verilog sim netlist
-uart_sim = $(wildcard src/uart/tb/*.sv) uart_viv
+uart_sim = $(wildcard src/uart/tb/*.sv) $(uart_viv)
 ram_rtl  = $(wildcard src/ram/rtl/*.sv)
 ram_sim  = $(wildcard src/ram/tb/*.sv)
 dma_rtl  = $(wildcard src/dma/rtl/*.sv)
@@ -47,7 +47,7 @@ top_sim  = $(wildcard src/top/tb/*.sv)
 ##############################
 # All the targets
 ##############################
-all : all_elabs all_sims
+all : all_elabs all_sims vivado_syn
 
 all_sims : tb_misc tb_alu tb_uart tb_ram tb_dma tb_cpu tb_top
 

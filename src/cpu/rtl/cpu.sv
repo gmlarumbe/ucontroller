@@ -61,14 +61,14 @@ module cpu (
     state_t state, next_state;
 
     // Signals
-    logic        pc_ena;
-    logic        load_inst;
-    logic        load_inst_auxbyte;
+    logic 	 pc_ena;
+    logic 	 load_inst;
+    logic 	 load_inst_auxbyte;
     logic [11:0] rom_instruction;
     logic [11:0] rom_aux;
     logic [11:0] addr = 'h0;
     logic [11:0] addr_aux;
-    logic [11:0] alu_data = 'h0;
+    logic [7:0]  alu_data = 'h0;
 
 
     // Auxiliary tasks
@@ -266,6 +266,8 @@ module cpu (
                 alu_data = DataIn;
                 next_state = IDLE;
             end
+
+	    default : ;
 
         endcase
     end
