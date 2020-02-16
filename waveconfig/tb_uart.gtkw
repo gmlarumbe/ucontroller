@@ -1,0 +1,92 @@
+[*]
+[*] GTKWave Analyzer v3.3.79 (w)1999-2017 BSI
+[*] Fri Feb 14 15:46:09 2020
+[*]
+[dumpfile] "/home/martigon/Repos/legacy/ucontroller/waves/tb_uart.lx2"
+[dumpfile_mtime] "Fri Feb 14 15:45:55 2020"
+[dumpfile_size] 644872
+[savefile] "/home/martigon/Repos/legacy/ucontroller/waveconfig/tb_uart.gtkw"
+[timestart] 0
+[size] 1920 1042
+[pos] -1 -1
+*-27.000000 398600000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_uart.
+[treeopen] tb_uart.DUT.
+[sst_width] 229
+[signals_width] 190
+[sst_expanded] 1
+[sst_vpaned_height] 293
+@28
+tb_uart.Clk[0]
+@22
+tb_uart.Data_Out[7:0]
+@28
+tb_uart.Data_Read[0]
+tb_uart.Empty[0]
+tb_uart.Full[0]
+tb_uart.RXD[0]
+tb_uart.Rst_n[0]
+tb_uart.TXD[0]
+@22
+tb_uart.TX_DataIn[7:0]
+@28
+tb_uart.TX_Ready[0]
+tb_uart.TX_Valid[0]
+@c00200
+-DUT
+@28
+tb_uart.DUT.Clk[0]
+@22
+tb_uart.DUT.Data_Out[7:0]
+@28
+tb_uart.DUT.Data_Read[0]
+tb_uart.DUT.Empty[0]
+@22
+tb_uart.DUT.Fifo_In[7:0]
+@28
+tb_uart.DUT.Fifo_Wren[0]
+tb_uart.DUT.Full[0]
+tb_uart.DUT.RXD[0]
+tb_uart.DUT.RX_Valid[0]
+tb_uart.DUT.Rst_n[0]
+tb_uart.DUT.TXD[0]
+@22
+tb_uart.DUT.TX_DataIn[7:0]
+@28
+tb_uart.DUT.TX_Ready[0]
+tb_uart.DUT.TX_Ready_i[0]
+tb_uart.DUT.TX_Start[0]
+tb_uart.DUT.TX_Valid[0]
+@1401200
+-DUT
+@800200
+-TX
+@28
+tb_uart.DUT.I_UART_TX.Clk[0]
+@22
+tb_uart.DUT.I_UART_TX.Data[7:0]
+@29
+tb_uart.DUT.I_UART_TX.EOT[0]
+@28
+tb_uart.DUT.I_UART_TX.Rst_n[0]
+tb_uart.DUT.I_UART_TX.Start[0]
+tb_uart.DUT.I_UART_TX.TXD[0]
+@22
+tb_uart.DUT.I_UART_TX.bit_cnt[31:0]
+@28
+tb_uart.DUT.I_UART_TX.bit_ctr_ena[0]
+tb_uart.DUT.I_UART_TX.bit_end[0]
+@22
+tb_uart.DUT.I_UART_TX.data_reg[7:0]
+@28
+tb_uart.DUT.I_UART_TX.data_send_end[0]
+tb_uart.DUT.I_UART_TX.load_data[0]
+tb_uart.DUT.I_UART_TX.next_state[1:0]
+@22
+tb_uart.DUT.I_UART_TX.period_cnt[31:0]
+@28
+tb_uart.DUT.I_UART_TX.state[1:0]
+@1000200
+-TX
+[pattern_trace] 1
+[pattern_trace] 0

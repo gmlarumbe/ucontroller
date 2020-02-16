@@ -1,0 +1,96 @@
+[*]
+[*] GTKWave Analyzer v3.3.79 (w)1999-2017 BSI
+[*] Sun Feb 16 17:32:23 2020
+[*]
+[dumpfile] "/home/martigon/Repos/legacy/ucontroller/waves/tb_cpu.lx2"
+[dumpfile_mtime] "Sun Feb 16 17:31:35 2020"
+[dumpfile_size] 27579
+[savefile] "/home/martigon/Repos/legacy/ucontroller/waveconfig/tb_cpu.gtkw"
+[timestart] 0
+[size] 1920 1042
+[pos] -1 -1
+*-23.000000 10350000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_cpu.
+[sst_width] 229
+[signals_width] 240
+[sst_expanded] 1
+[sst_vpaned_height] 293
+@28
+tb_cpu.Rst_n[0]
+tb_cpu.Clk[0]
+@22
+tb_cpu.ALU_DataIn[7:0]
+tb_cpu.ALU_DataOut[7:0]
+tb_cpu.ALU_op[4:0]
+@28
+tb_cpu.DMA_Ack[0]
+tb_cpu.DMA_Ready[0]
+tb_cpu.DMA_Req[0]
+tb_cpu.DMA_Tx_Start[0]
+@22
+tb_cpu.DataIn[7:0]
+tb_cpu.DataOut[7:0]
+@28
+tb_cpu.FlagC[0]
+tb_cpu.FlagE[0]
+tb_cpu.FlagN[0]
+tb_cpu.FlagZ[0]
+@22
+tb_cpu.RAM_Addr[7:0]
+@28
+tb_cpu.RAM_Cs[0]
+tb_cpu.RAM_Oen[0]
+tb_cpu.RAM_Wen[0]
+@22
+tb_cpu.ROM_Addr[11:0]
+tb_cpu.ROM_Data[11:0]
+@800200
+-DUT
+@22
+tb_cpu.I_CPU.ALU_DataIn[7:0]
+tb_cpu.I_CPU.ALU_DataOut[7:0]
+tb_cpu.I_CPU.ALU_op[4:0]
+@28
+tb_cpu.I_CPU.Clk[0]
+tb_cpu.I_CPU.DMA_Ack[0]
+tb_cpu.I_CPU.DMA_Ready[0]
+tb_cpu.I_CPU.DMA_Req[0]
+@29
+tb_cpu.I_CPU.DMA_Tx_Start[0]
+@22
+tb_cpu.I_CPU.DataIn[7:0]
+tb_cpu.I_CPU.DataOut[7:0]
+@28
+tb_cpu.I_CPU.FlagC[0]
+tb_cpu.I_CPU.FlagE[0]
+tb_cpu.I_CPU.FlagN[0]
+tb_cpu.I_CPU.FlagZ[0]
+@22
+tb_cpu.I_CPU.RAM_Addr[7:0]
+@28
+tb_cpu.I_CPU.RAM_Cs[0]
+tb_cpu.I_CPU.RAM_Oen[0]
+tb_cpu.I_CPU.RAM_Wen[0]
+@22
+tb_cpu.I_CPU.ROM_Addr[11:0]
+tb_cpu.I_CPU.ROM_Data[11:0]
+@28
+tb_cpu.I_CPU.Rst_n[0]
+@22
+tb_cpu.I_CPU.addr[11:0]
+tb_cpu.I_CPU.addr_aux[11:0]
+tb_cpu.I_CPU.alu_data[7:0]
+@28
+tb_cpu.I_CPU.load_inst[0]
+tb_cpu.I_CPU.load_inst_auxbyte[0]
+tb_cpu.I_CPU.next_state[2:0]
+tb_cpu.I_CPU.pc_ena[0]
+@22
+tb_cpu.I_CPU.rom_aux[11:0]
+tb_cpu.I_CPU.rom_instruction[11:0]
+@24
+tb_cpu.I_CPU.state[2:0]
+@1000200
+-DUT
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,0 +1,78 @@
+[*]
+[*] GTKWave Analyzer v3.3.79 (w)1999-2017 BSI
+[*] Wed Feb 12 18:30:58 2020
+[*]
+[dumpfile] "/home/martigon/Repos/legacy/ucontroller/waves/tb_alu.lx2"
+[dumpfile_mtime] "Wed Feb 12 18:30:19 2020"
+[dumpfile_size] 12562
+[savefile] "/home/martigon/Repos/legacy/ucontroller/waveconfig/tb_alu.gtkw"
+[timestart] 0
+[size] 1920 1042
+[pos] -1 -1
+*-21.000000 5590000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_alu.
+[sst_width] 229
+[signals_width] 210
+[sst_expanded] 1
+[sst_vpaned_height] 293
+@28
+tb_alu.Clk[0]
+tb_alu.Rst_n[0]
+tb_alu.FlagC[0]
+tb_alu.FlagE[0]
+tb_alu.FlagN[0]
+tb_alu.FlagZ[0]
+@22
+tb_alu.Index_Reg[7:0]
+[color] 1
+tb_alu.u_instruction[4:0]
+[color] 7
+tb_alu.InData[7:0]
+[color] 3
+tb_alu.OutData[7:0]
+@800201
+-DUT
+@29
+tb_alu.DUT.Clk[0]
+tb_alu.DUT.Rst_n[0]
+@23
+tb_alu.DUT.OutData[7:0]
+@29
+tb_alu.DUT.EnA[0]
+tb_alu.DUT.EnAcc[0]
+tb_alu.DUT.EnB[0]
+tb_alu.DUT.EnC[0]
+tb_alu.DUT.EnE[0]
+tb_alu.DUT.EnIndex[0]
+tb_alu.DUT.EnN[0]
+tb_alu.DUT.EnZ[0]
+tb_alu.DUT.FlagC[0]
+tb_alu.DUT.FlagE[0]
+tb_alu.DUT.FlagN[0]
+tb_alu.DUT.FlagZ[0]
+@23
+tb_alu.DUT.InA[7:0]
+tb_alu.DUT.InAcc[7:0]
+tb_alu.DUT.InB[7:0]
+@29
+tb_alu.DUT.InC[0]
+@23
+tb_alu.DUT.InData[7:0]
+@29
+tb_alu.DUT.InE[0]
+@23
+tb_alu.DUT.InIndex[7:0]
+@29
+tb_alu.DUT.InN[0]
+tb_alu.DUT.InZ[0]
+@23
+tb_alu.DUT.Index_Reg[7:0]
+tb_alu.DUT.OutA[7:0]
+tb_alu.DUT.OutAcc[7:0]
+tb_alu.DUT.OutB[7:0]
+tb_alu.DUT.OutIndex[7:0]
+tb_alu.DUT.u_instruction[4:0]
+@1000201
+-DUT
+[pattern_trace] 1
+[pattern_trace] 0
