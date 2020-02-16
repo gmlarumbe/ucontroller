@@ -7,6 +7,7 @@ VVP=vvp
 VVP_FLAGS=
 VERILATOR=verilator
 VERILATOR_FLAGS=--lint-only +1800-2012ext+sv
+VIVADO_BIN=/opt/Xilinx/Vivado/2018.3/bin/vivado
 
 WAVES_FORMAT=lx2
 WAVES_DIR=waves
@@ -17,28 +18,29 @@ UNISIMS_DIR=vivado/data/verilog/src/unisims
 ## Commands for current targets
 LINT_CMD    = $(VERILATOR) $(VERILATOR_FLAGS) $^
 COMPILE_CMD = $(IVERILOG) $(IVERILOG_FLAGS) -o $(IVERILOG_CDIR)/$@.compiled $^
-SIM_CMD	    = $(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/$@.compiled -$(WAVES_FORMAT)
+SIM_CMD     = $(VVP) $(VVP_FLAGS) $(IVERILOG_CDIR)/$@.compiled -$(WAVES_FORMAT)
 WAVES_CMD   = mv $@.$(WAVES_FORMAT) $(WAVES_DIR)
 
 
 #############
 ## Sources
 #############
-pkg	 = $(wildcard src/pkg/*.sv)
+pkg      = $(wildcard src/pkg/*.sv)
 misc_rtl = $(wildcard src/misc/rtl/*.sv)
 misc_sim = $(wildcard src/misc/tb/*.sv)
-alu_rtl	 = $(wildcard src/alu/rtl/*.sv)
-alu_sim	 = $(wildcard src/alu/tb/*.sv)
+alu_rtl  = $(wildcard src/alu/rtl/*.sv)
+alu_sim  = $(wildcard src/alu/tb/*.sv)
 uart_rtl = $(wildcard src/uart/rtl/*.sv)
-uart_sim = $(wildcard src/uart/tb/*.sv) $(wildcard src/uart/tb/*.v)
-ram_rtl	 = $(wildcard src/ram/rtl/*.sv)
-ram_sim	 = $(wildcard src/ram/tb/*.sv)
-dma_rtl	 = $(wildcard src/dma/rtl/*.sv)
-dma_sim	 = $(wildcard src/dma/tb/*.sv)
-cpu_rtl	 = $(wildcard src/cpu/rtl/*.sv)
-cpu_sim	 = $(wildcard src/cpu/tb/*.sv)
-top_rtl	 = $(wildcard src/top/rtl/*.sv)
-top_sim	 = $(wildcard src/top/tb/*.sv)
+uart_viv = $(wildcard src/uart/tb/*.v) # FIFO Verilog sim netlist
+uart_sim = $(wildcard src/uart/tb/*.sv) uart_viv
+ram_rtl  = $(wildcard src/ram/rtl/*.sv)
+ram_sim  = $(wildcard src/ram/tb/*.sv)
+dma_rtl  = $(wildcard src/dma/rtl/*.sv)
+dma_sim  = $(wildcard src/dma/tb/*.sv)
+cpu_rtl  = $(wildcard src/cpu/rtl/*.sv)
+cpu_sim  = $(wildcard src/cpu/tb/*.sv)
+top_rtl  = $(wildcard src/top/rtl/*.sv)
+top_sim  = $(wildcard src/top/tb/*.sv)
 
 
 
@@ -56,12 +58,12 @@ all_elabs: misc alu uart ram dma cpu top
 ##############################
 # TOP
 ##############################
-tb_top : $(pkg) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_sim) $(top_sim)
+tb_top : $(pkg) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_viv) $(top_sim)
 	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 	$(SIM_CMD)
 	$(WAVES_CMD)
 
-top : $(pkg) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_sim)
+top : $(pkg) $(misc_rtl) $(alu_rtl) $(uart_rtl) $(ram_rtl) $(dma_rtl) $(cpu_rtl) $(top_rtl) $(uart_viv)
 	$(COMPILE_CMD) -y$(UNISIMS_DIR)
 
 
@@ -166,3 +168,19 @@ clean:
 
 check_req:
 	$(SCRIPTSDIR)/check_requirements.sh
+
+
+###########################
+## Vivado
+##########################
+vivado_syn : vivado_check vivado_proj
+	$(VIVADO_BIN) vivado/ucontroller/ucontroller.xpr -mode tcl -source vivado/synthesize.tcl
+
+vivado_proj : vivado_check
+	cd vivado && test -d ucontroller || $(VIVADO_BIN) -mode tcl -source ucontroller.tcl
+
+vivado_clean :
+	rm -rf vivado/ucontroller
+
+vivado_check:
+	$(SCRIPTSDIR)/check_vivado.sh
