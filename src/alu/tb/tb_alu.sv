@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // Title         : ALU Testbench
-// Project       : 
+// Project       :
 //-----------------------------------------------------------------------------
 // File          : tb_alu.sv
 // Author        : Gonzalo Martinez Larumbe
@@ -8,9 +8,9 @@
 // Last modified : 2020/02/16
 //-----------------------------------------------------------------------------
 // Description :
-// 
+//
 //-----------------------------------------------------------------------------
-// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com> 
+// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
 //
 //------------------------------------------------------------------------------
 // Modification history :
@@ -20,7 +20,7 @@
 
 import global_pkg::*;
 
-module tb_alu () ;
+module automatic tb_alu () ;
 
     // Simulation parameters
     timeprecision 1ps;
@@ -77,58 +77,60 @@ module tb_alu () ;
     endtask : execute_instruction
 
 
-    task do_sum (input logic [7:0] sumA, input logic [7:0] sumB);
+    task op_one_operand (input logic [7:0] D, input alu_op op);
         execute_instruction(nop);
-        execute_instruction(op_lda, sumA);
-        execute_instruction(op_ldb, sumB);
-        execute_instruction(op_add);
+        execute_instruction(op, D);
         execute_instruction(op_oeacc);
-        assert (OutData == sumA + sumB);
         execute_instruction(nop);
-    endtask: do_sum
+    endtask: op_one_operand
+
+
+    task op_two_operands (input logic [7:0] A, input logic [7:0] B, input alu_op op);
+        execute_instruction(nop);
+        execute_instruction(op_lda, A);
+        execute_instruction(op_ldb, B);
+        execute_instruction(op);
+        execute_instruction(op_oeacc);
+    endtask: op_two_operands
+
+
+    task do_add (input logic [7:0] sumA, input logic [7:0] sumB);
+        $display("@%0d: Summing %0d and %0d", $time, sumA, sumB);
+        op_two_operands(sumA, sumB, op_add);
+        assert (OutData == sumA + sumB) $display("@%0d: Obtained: %0d", $time, OutData);
+            else $error("@%0d: ERROR: Obtained: %0d", $time, OutData);
+    endtask: do_add
 
 
     task do_sub (input logic [7:0] subA, input logic [7:0] subB);
-        execute_instruction(nop);
-        execute_instruction(op_lda, subA);
-        execute_instruction(op_ldb, subB);
-        execute_instruction(op_sub);
-        execute_instruction(op_oeacc);
-        assert (OutData == subA - subB);
-        execute_instruction(nop);
+        $display("@%0d: Subracting %0d minus %0d", $time, subA, subB);
+        op_two_operands(subA, subB, op_sub);
+        assert (OutData == subA - subB) $display("@%0d: Obtained: %0d", $time, OutData);
+            else $error("@%0d: ERROR: Obtained: %0d", $time, OutData);
     endtask: do_sub
 
 
     task do_and (input logic [7:0] andA, input logic [7:0] andB);
-        execute_instruction(nop);
-        execute_instruction(op_lda, andA);
-        execute_instruction(op_ldb, andB);
-        execute_instruction(op_and);
-        execute_instruction(op_oeacc);
-        assert (OutData == (andA & andB));
-        execute_instruction(nop);
+        $display("@%0d: ANDing %0x & %0x", $time, andA, andB);
+        op_two_operands(andA, andB, op_and);
+        assert (OutData == (andA & andB)) $display("@%0d: Obtained: %0x", $time, OutData);
+            else $error("@%0d: ERROR: Obtained: %0x", $time, OutData);
     endtask: do_and
 
 
     task do_or (input logic [7:0] orA, input logic [7:0] orB);
-        execute_instruction(nop);
-        execute_instruction(op_lda, orA);
-        execute_instruction(op_ldb, orB);
-        execute_instruction(op_or);
-        execute_instruction(op_oeacc);
-        assert (OutData == (orA | orB));
-        execute_instruction(nop);
+        $display("@%0d: ORing %0x & %0x", $time, orA, orB);
+        op_two_operands(orA, orB, op_or);
+        assert (OutData == (orA | orB)) $display("@%0d: Obtained: %0x", $time, OutData);
+            else $error("@%0x: ERROR: Obtained: %0d", $time, OutData);
     endtask: do_or
 
 
     task do_xor (input logic [7:0] xorA, input logic [7:0] xorB);
-        execute_instruction(nop);
-        execute_instruction(op_lda, xorA);
-        execute_instruction(op_ldb, xorB);
-        execute_instruction(op_xor);
-        execute_instruction(op_oeacc);
-        assert (OutData == (xorA ^ xorB));
-        execute_instruction(nop);
+        $display("@%0d: XORing %0x & %0x", $time, xorA, xorB);
+        op_two_operands(xorA, xorB, op_xor);
+        assert (OutData == (xorA ^ xorB)) $display("@%0d: Obtained: %0x", $time, OutData);
+            else $error("@%0x: ERROR: Obtained: %0d", $time, OutData);
     endtask: do_xor
 
 
@@ -148,10 +150,10 @@ module tb_alu () ;
     // Stimuli
     initial begin
         reset_system;
-        do_sum('h1, 'h1);
-        do_sum('h3, 'h2);
-        do_sum('hA, 'hA);
-        do_sum('hFF, 'h02);
+        do_add('h1, 'h1);
+        do_add('h3, 'h2);
+        do_add('hA, 'hA);
+        do_add('hFF, 'h02);
 
         do_sub('h1, 'h1);
         do_sub('h5, 'h0);
