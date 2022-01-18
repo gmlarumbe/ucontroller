@@ -18,6 +18,8 @@
 //-----------------------------------------------------------------------------
 
 
+import global_pkg::*;
+
 module ucontroller # (
     parameter logic [31:0] FREQ_CLK = 100000000,
     parameter logic [31:0] TX_SPEED = 115200
