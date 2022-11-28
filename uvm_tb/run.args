@@ -1,0 +1,29 @@
+# Switches
+-uvm
+
+# RTL
+src/pkg/global_pkg.sv
+src/alu/rtl/alu.sv
+src/cpu/rtl/cpu.sv
+src/dma/rtl/dma.sv
+src/dma/rtl/dma_arbiter.sv
+src/dma/rtl/dma_rx.sv
+src/dma/rtl/dma_tx.sv
+src/misc/rtl/bin2bcd.sv
+src/ram/rtl/gp_ram.sv
+src/ram/rtl/ram.sv
+src/ram/rtl/regs_ram.sv
+src/top/rtl/ram_arbiter.sv
+src/top/rtl/ucontroller.sv
+src/uart/rtl/fifo_wrapper.sv
+src/uart/rtl/sreg.sv
+src/uart/rtl/uart.sv
+src/uart/rtl/uart_rx.sv
+src/uart/rtl/uart_tx.sv
+
+# TB
+-y uvm_tb/gpio_agent
+uvm_tb/gpio_agent/gpio_agent_pkg.sv
+
+# Top file
+uvm_tb/uvm_tb_top.sv
