@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // Title         : Testbench Hierarchy Top
-// Project       : 
+// Project       :
 //-----------------------------------------------------------------------------
 // File          : tb_top.sv
 // Author        : Gonzalo Martinez Larumbe
@@ -8,14 +8,16 @@
 // Last modified : 2020/02/16
 //-----------------------------------------------------------------------------
 // Description :
-// 
+//
 //-----------------------------------------------------------------------------
-// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com> 
+// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
 //
 //------------------------------------------------------------------------------
 // Modification history :
 // 2020/02/16 : created
 //-----------------------------------------------------------------------------
+
+`timescale 1ns/1ps
 
 
 module tb_top () ;

@@ -56,20 +56,20 @@ module cpu (
                  DECODE,
                  EXECUTE,
                  READ_MEM,
-		 WAIT_DMA
+                 WAIT_DMA
                  } state_t;
 
     state_t state, next_state;
 
     // Signals
-    logic 	 pc_ena;
-    logic 	 load_inst;
-    logic 	 load_inst_auxbyte;
+    logic        pc_ena;
+    logic        load_inst;
+    logic        load_inst_auxbyte;
     logic [11:0] rom_instruction;
     logic [11:0] rom_aux;
-    logic [11:0] addr = 'h0;
+    logic [11:0] addr;
     logic [11:0] addr_aux;
-    logic [7:0]  alu_data = 'h0;
+    logic [7:0]  alu_data;
 
 
     // Auxiliary tasks
@@ -187,7 +187,7 @@ module cpu (
                     end
                     default : ;
                 endcase
-                ALU_op 	   = op_oeacc;
+                ALU_op     = op_oeacc;
                 DataOut    = ALU_DataOut;
                 next_state = IDLE;
             end
@@ -216,7 +216,7 @@ module cpu (
 
         unique case (state)
             IDLE : begin
-                if (DMA_Req) 
+                if (DMA_Req)
                     next_state = WAIT_DMA;
                 else
                     next_state = FETCH;
@@ -260,12 +260,12 @@ module cpu (
                 next_state = IDLE;
             end
 
-	    WAIT_DMA : begin
-		if (!DMA_Req)
-		    next_state = IDLE;
-	    end
+            WAIT_DMA : begin
+                if (!DMA_Req)
+                    next_state = IDLE;
+            end
 
-	    default : ;
+            default : ;
 
         endcase
     end
@@ -302,12 +302,12 @@ module cpu (
 
 
     always_ff @(posedge Clk) begin
-	if (!Rst_n) begin
-	    DMA_Ack <= 1'h0;
-	end
-	else if (state == IDLE && DMA_Req)
+        if (!Rst_n) begin
+            DMA_Ack <= 1'h0;
+        end
+        else if (state == IDLE && DMA_Req)
             DMA_Ack <= 1'b1;
-	else
+        else
             DMA_Ack <= 1'b0;
     end
 

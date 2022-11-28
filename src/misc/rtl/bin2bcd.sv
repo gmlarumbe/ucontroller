@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // Title         : Binary to BCD converter
-// Project       : 
+// Project       :
 //-----------------------------------------------------------------------------
 // File          : bin2bcd.sv
 // Author        : Gonzalo Martinez Larumbe
@@ -11,7 +11,7 @@
 // Double Dabble based Binary to BCD converter
 //   - https://en.wikipedia.org/wiki/Double_dabble
 //-----------------------------------------------------------------------------
-// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com> 
+// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
 //
 //------------------------------------------------------------------------------
 // Modification history :
@@ -40,11 +40,11 @@ module bin2bcd # (
                  } state_t;
 
     state_t state;
-    logic [DEC_DIGITS*4-1:0] bcd_i;          // BCD output vector
-    logic [BIN_WIDTH-1:0]    databin_i;      // Input binary data being shifted
-    logic [DEC_DIGITS-1:0]   digit_idx;      // Decimal digit being indexed
-    logic [7:0]              loop_count = 0; // Number of loops performed = BIN_WIDTH
-    logic [3:0]              bcd_digit;      // Current BCD digit
+    logic [DEC_DIGITS*4-1:0] bcd_i;      // BCD output vector
+    logic [BIN_WIDTH-1:0]    databin_i;  // Input binary data being shifted
+    logic [DEC_DIGITS-1:0]   digit_idx;  // Decimal digit being indexed
+    logic [7:0]              loop_count; // Number of loops performed = BIN_WIDTH
+    logic [3:0]              bcd_digit;  // Current BCD digit
 
 
     // Seq FSM

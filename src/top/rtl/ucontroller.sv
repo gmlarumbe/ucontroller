@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // Title         : MicroController Top module
-// Project       : 
+// Project       :
 //-----------------------------------------------------------------------------
 // File          : ucontroller.sv
 // Author        : Gonzalo Martinez Larumbe
@@ -8,9 +8,9 @@
 // Last modified : 2020/02/16
 //-----------------------------------------------------------------------------
 // Description :
-// 
+//
 //-----------------------------------------------------------------------------
-// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com> 
+// Copyright (c) Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
 //
 //------------------------------------------------------------------------------
 // Modification history :
@@ -32,7 +32,7 @@ module ucontroller # (
     // ROM
     input logic [11:0]  ROM_Data,
     output logic [11:0] ROM_Addr,
-    // Exteral HW
+    // External HW
     output logic [7:0]  Temp,
     output logic [7:0]  Switches
     );

@@ -54,6 +54,17 @@ all_sims : tb_misc tb_alu tb_uart tb_ram tb_dma tb_cpu tb_top
 all_elabs: misc alu uart ram dma cpu top
 
 
+##############################
+# UVM TB
+##############################
+.PHONY: uvm_tb_compile
+uvm_tb_compile :
+	xrun -f uvm_tb/compile.args
+
+.PHONY: uvm_tb_run
+uvm_tb_run :
+	xrun -f uvm_tb/run.args
+
 
 ##############################
 # TOP
