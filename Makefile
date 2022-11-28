@@ -57,13 +57,16 @@ all_elabs: misc alu uart ram dma cpu top
 ##############################
 # UVM TB
 ##############################
-.PHONY: uvm_tb_compile
-uvm_tb_compile :
-	xrun -f uvm_tb/compile.args
+export MAKEFILE_DIR = $(shell pwd)
 
-.PHONY: uvm_tb_run
-uvm_tb_run :
-	xrun -f uvm_tb/run.args
+.PHONY: uvm_tb_compile
+uvm_tb_compile : 
+	mkdir -p sim
+	cd sim && xrun -f $(MAKEFILE_DIR)/uvm_tb/compile.args
+
+# .PHONY: uvm_tb_run
+# uvm_tb_run :
+# 	xrun -f uvm_tb/run.args
 
 
 ##############################

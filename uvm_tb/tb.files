@@ -1,12 +1,12 @@
 # Xilinx unisims and fifo_generator netlist
 # TODO: Compiled manually so far
--reflib /proj/fpga_no_backup/cobra/verif/egonlar/data/ucontroller/uvm_tb/unisims_compiled/unisims
-/proj/fpga_no_backup/cobra/verif/egonlar/data/ucontroller/src/uart/tb/fifo_generator_0_sim_netlist.v
+-reflib $MAKEFILE_DIR/uvm_tb/unisims_compiled/unisims
+$MAKEFILE_DIR/src/uart/tb/fifo_generator_0_sim_netlist.v
 
 # UVCs
-+incdir+uvm_tb/gpio_agent
-uvm_tb/gpio_agent/gpio_agent_pkg.sv
-uvm_tb/gpio_agent/gpio_if.sv
-uvm_tb/gpio_agent/gpio_driver_bfm.sv
-uvm_tb/gpio_agent/gpio_monitor_bfm.sv
++incdir+$MAKEFILE_DIR/uvm_tb/gpio_agent
+$MAKEFILE_DIR/uvm_tb/gpio_agent/gpio_agent_pkg.sv
+$MAKEFILE_DIR/uvm_tb/gpio_agent/gpio_if.sv
+$MAKEFILE_DIR/uvm_tb/gpio_agent/gpio_driver_bfm.sv
+$MAKEFILE_DIR/uvm_tb/gpio_agent/gpio_monitor_bfm.sv
 

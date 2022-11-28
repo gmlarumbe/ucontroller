@@ -3,11 +3,11 @@
 -timescale 1ns/1ps
 
 # Files
--f uvm_tb/rtl.files
--f uvm_tb/tb.files
+-f $MAKEFILE_DIR/uvm_tb/rtl.files
+-f $MAKEFILE_DIR/uvm_tb/tb.files
 
 # Top file
 -top glbl
 -top uvm_tb_top
-uvm_tb/uvm_tb_top.sv
+$MAKEFILE_DIR/uvm_tb/uvm_tb_top.sv
 
